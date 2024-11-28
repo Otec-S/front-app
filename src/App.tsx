@@ -1,5 +1,13 @@
+import { CssBaseline } from "@mui/material";
+import SignUp from "./sign-up/SignUp";
+
 function App() {
-  return <p>App </p>;
+  return (
+    <>
+      <CssBaseline />
+      <SignUp />
+    </>
+  );
 }
 
 export default App;
