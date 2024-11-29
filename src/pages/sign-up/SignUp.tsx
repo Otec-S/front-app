@@ -10,10 +10,12 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import AppTheme from "../shared-theme/AppTheme";
-import ColorModeSelect from "../shared-theme/ColorModeSelect";
+import AppTheme from "../../shared-theme/AppTheme";
+import ColorModeSelect from "../../shared-theme/ColorModeSelect";
 import { useState } from "react";
-import Logo from "../assets/TB-Logo-clear.png";
+import Logo from "../../assets/TB-Logo-clear.png";
+
+import styles from "./SignUp.module.css";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -108,12 +110,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          {/* TODO: Add your custom icon here */}
-          {/* <SitemarkIcon /> */}
-          <div>
-            <img src={Logo} alt="Логотип Трансфербокс" />
-          </div>
-
+          <img className={styles.logo} src={Logo} alt="Логотип Трансфербокс" />
           <Typography
             component="h1"
             variant="h4"
@@ -129,8 +126,8 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
-                // required
                 fullWidth
+                autoFocus
                 id="email"
                 placeholder="your@email.com"
                 name="email"
@@ -144,7 +141,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             <FormControl>
               <FormLabel htmlFor="password">Password</FormLabel>
               <TextField
-                // required
                 fullWidth
                 name="password"
                 placeholder="••••••"
