@@ -16,6 +16,13 @@ import { useState } from "react";
 import Logo from "../../assets/TB-Logo-clear.png";
 
 import styles from "./SignUp.module.css";
+import {
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -64,6 +71,9 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const validateInputs = () => {
     const email = document.getElementById("email") as HTMLInputElement;
@@ -129,7 +139,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 fullWidth
                 autoFocus
                 id="email"
-                placeholder="your@email.com"
                 name="email"
                 autoComplete="email"
                 variant="outlined"
@@ -138,20 +147,36 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 color={passwordError ? "error" : "primary"}
               />
             </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
+
+            <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
+              Password
+            </FormLabel>
+            <FormControl error={passwordError}>
+              <OutlinedInput
                 fullWidth
                 name="password"
-                placeholder="••••••"
-                type="password"
                 id="password"
                 autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? "error" : "primary"}
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={
+                        showPassword
+                          ? "hide the password"
+                          : "display the password"
+                      }
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
+              <FormHelperText>
+                {passwordError ? passwordErrorMessage : ""}
+              </FormHelperText>
             </FormControl>
 
             <Button
