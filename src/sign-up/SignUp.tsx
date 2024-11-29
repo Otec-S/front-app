@@ -1,9 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Link from "@mui/material/Link";
@@ -13,9 +11,9 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import AppTheme from "../shared-theme/AppTheme";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import ColorModeSelect from "../shared-theme/ColorModeSelect";
 import { useState } from "react";
+import Logo from "../assets/TB-Logo-clear.png";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -59,7 +57,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignUpTS(props: { disableCustomTheme?: boolean }) {
+export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -111,7 +109,11 @@ export default function SignUpTS(props: { disableCustomTheme?: boolean }) {
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           {/* TODO: Add your custom icon here */}
-          <SitemarkIcon />
+          {/* <SitemarkIcon /> */}
+          <div>
+            <img src={Logo} alt="Логотип Трансфербокс" />
+          </div>
+
           <Typography
             component="h1"
             variant="h4"
