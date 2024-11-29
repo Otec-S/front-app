@@ -1,11 +1,11 @@
 import { CssBaseline } from "@mui/material";
-import SignUp from "./sign-up/SignUp";
+import SignUpTS from "./sign-up/SignUpTS";
 
 function App() {
   return (
     <>
       <CssBaseline />
-      <SignUp />
+      <SignUpTS />
     </>
   );
 }
