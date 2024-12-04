@@ -17,7 +17,6 @@ import Logo from "../../assets/TB-Logo-clear.png";
 
 import styles from "./SignUp.module.css";
 import {
-  FormHelperText,
   IconButton,
   InputAdornment,
   OutlinedInput,
@@ -144,9 +143,10 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 autoComplete="email"
                 variant="outlined"
                 error={emailError}
-                helperText={emailErrorMessage}
-                color={passwordError ? "error" : "primary"}
               />
+              <div className={styles.placeForErrMassage}>
+                {emailError ? emailErrorMessage : ""}
+              </div>
             </FormControl>
 
             <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
@@ -181,9 +181,9 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                     </InputAdornment>
                   }
                 />
-                <FormHelperText>
+                <div className={styles.placeForErrMassage}>
                   {passwordError ? passwordErrorMessage : ""}
-                </FormHelperText>
+                </div>
               </FormControl>
             </Tooltip>
 

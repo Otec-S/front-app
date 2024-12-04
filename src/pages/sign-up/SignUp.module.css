@@ -5,3 +5,10 @@
 .passwordLabel {
   margin-bottom: 20px;
 }
+
+.placeForErrMassage {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  height: 1.5rem;
+  color: #c20a0a;
+}
