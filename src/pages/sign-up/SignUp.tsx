@@ -21,6 +21,7 @@ import {
   IconButton,
   InputAdornment,
   OutlinedInput,
+  Tooltip,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -83,16 +84,16 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage("Введите верный email.");
+      setEmailErrorMessage("Введите корректный email");
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value) {
       setPasswordError(true);
-      setPasswordErrorMessage("Пароль должен быть не менее 6 символов.");
+      setPasswordErrorMessage("Введите пароль");
       isValid = false;
     } else {
       setPasswordError(false);
@@ -151,33 +152,40 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
               Password
             </FormLabel>
-            <FormControl error={passwordError}>
-              <OutlinedInput
-                fullWidth
-                name="password"
-                id="password"
-                autoComplete="new-password"
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={
-                        showPassword
-                          ? "hide the password"
-                          : "display the password"
-                      }
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              <FormHelperText>
-                {passwordError ? passwordErrorMessage : ""}
-              </FormHelperText>
-            </FormControl>
+            <Tooltip
+              placement="top-start"
+              arrow
+              disableFocusListener
+              title="Пожалуйста, придумайте хорошо защищенный пароль"
+            >
+              <FormControl error={passwordError}>
+                <OutlinedInput
+                  fullWidth
+                  name="password"
+                  id="password"
+                  autoComplete="new-password"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "hide the password"
+                            : "display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <FormHelperText>
+                  {passwordError ? passwordErrorMessage : ""}
+                </FormHelperText>
+              </FormControl>
+            </Tooltip>
 
             <Button
               type="submit"
