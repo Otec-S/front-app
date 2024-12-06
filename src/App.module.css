@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+/* FIXME: */
+/* .MuiPaper-root
+  .MuiPaper-outlined
+  .MuiPaper-rounded
+  .MuiCard-root
+  .css-rawaz4-MuiPaper-root-MuiCard-root {
+  overflow: auto !important;
+} */

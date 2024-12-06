@@ -23,6 +23,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { userRegistration } from "../../utils/api/user-registration";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -102,16 +103,29 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     return isValid;
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (emailError || passwordError) {
-      event.preventDefault();
       return;
     }
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const email = data.get("email")?.toString().trim() ?? "";
+    const password = data.get("password")?.toString().trim() ?? "";
+
+    try {
+      const res = await userRegistration({ email, password });
+      if (res.id) {
+        console.log("Регистрация прошла успешно");
+      } else if (res.data.email) {
+        console.log("Ошибка в email:", res.data.email.toString());
+      } else if (res.data.password) {
+        console.log("Ошибка в password:", res.data.password.toString());
+      }
+    } catch (error) {
+      console.error("Ошибка в handleSubmit:", error);
+    }
   };
 
   return (
