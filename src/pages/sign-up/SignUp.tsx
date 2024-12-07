@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import FormLabel from "@mui/material/FormLabel";
@@ -25,6 +24,8 @@ import {
   OutlinedInput,
   Tooltip,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { userRegistration } from "../../utils/api/user-registration";
 
@@ -82,6 +83,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [alertStatus, setAlertStatus] = useState<
     "success" | "error" | "warning" | "info"
   >("success");
+  const [loading, setLoading] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -137,6 +139,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     const password = data.get("password")?.toString().trim() ?? "";
 
     try {
+      setLoading(true);
       const res = await userRegistration({ email, password });
       if (res.error === "internal_server_error") {
         showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
@@ -160,6 +163,8 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       }
     } catch (error) {
       console.error("Ошибка в handleSubmit:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -257,15 +262,16 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                   </div>
                 </FormControl>
               </Tooltip>
-
-              <Button
+              <LoadingButton
                 type="submit"
-                fullWidth
                 variant="contained"
+                fullWidth
+                color="secondary"
                 onClick={validateInputs}
+                loading={loading}
               >
                 Зарегистрироваться
-              </Button>
+              </LoadingButton>
             </Box>
             <Divider>
               <Typography sx={{ color: "text.secondary" }}>или</Typography>
