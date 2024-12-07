@@ -17,8 +17,11 @@ import Logo from "../../assets/TB-Logo-clear.png";
 
 import styles from "./SignUp.module.css";
 import {
+  Alert,
+  AlertTitle,
   IconButton,
   InputAdornment,
+  Modal,
   OutlinedInput,
   Tooltip,
 } from "@mui/material";
@@ -68,11 +71,30 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props: { disableCustomTheme?: boolean }) {
+  const [open, setOpen] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertStatus, setAlertStatus] = useState<
+    "success" | "error" | "warning" | "info"
+  >("success");
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const showAlert = (
+    status: "success" | "error" | "warning" | "info",
+    title: string,
+    text: string,
+  ) => {
+    handleOpen();
+    setAlertStatus(status);
+    setAlertTitle(title);
+    setAlertText(text);
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -116,12 +138,25 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
     try {
       const res = await userRegistration({ email, password });
-      if (res.id) {
+      if (res.error === "internal_server_error") {
+        showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
+      } else if (res.id) {
         console.log("Регистрация прошла успешно");
+        showAlert(
+          "success",
+          "Регистрация прошла успешно!",
+          "Для активации аккаунта перейдите по ссылке в письме",
+        );
       } else if (res.data.email) {
         console.log("Ошибка в email:", res.data.email.toString());
+        showAlert("warning", "Ошибка в email:", res.data.email.toString());
       } else if (res.data.password) {
         console.log("Ошибка в password:", res.data.password.toString());
+        showAlert(
+          "warning",
+          "Ошибка в password:",
+          res.data.password.toString(),
+        );
       }
     } catch (error) {
       console.error("Ошибка в handleSubmit:", error);
@@ -129,105 +164,128 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   };
 
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} />
-      <SignUpContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
-          <img className={styles.logo} src={Logo} alt="Логотип Трансфербокс" />
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-          >
-            Регистрация
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-          >
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                fullWidth
-                autoFocus
-                id="email"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-              />
-              <div className={styles.placeForErrMassage}>
-                {emailError ? emailErrorMessage : ""}
-              </div>
-            </FormControl>
+    <>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className={styles.modal}>
+          <Alert severity={alertStatus}>
+            <AlertTitle>{alertTitle}</AlertTitle>
+            {alertText}
+          </Alert>
+        </Box>
+      </Modal>
 
-            <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
-              Password
-            </FormLabel>
-            <Tooltip
-              placement="top-start"
-              arrow
-              disableFocusListener
-              title="Пожалуйста, придумайте хорошо защищенный пароль"
+      <AppTheme {...props}>
+        <CssBaseline enableColorScheme />
+        <ColorModeSelect
+          sx={{ position: "fixed", top: "1rem", right: "1rem" }}
+        />
+        <SignUpContainer direction="column" justifyContent="space-between">
+          <Card variant="outlined">
+            <img
+              className={styles.logo}
+              src={Logo}
+              alt="Логотип Трансфербокс"
+            />
+            <Typography
+              component="h1"
+              variant="h4"
+              sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
             >
-              <FormControl error={passwordError}>
-                <OutlinedInput
+              Регистрация
+            </Typography>
+
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+            >
+              <FormControl>
+                <FormLabel htmlFor="email">Email</FormLabel>
+                <TextField
                   fullWidth
-                  name="password"
-                  id="password"
-                  autoComplete="new-password"
-                  type={showPassword ? "text" : "password"}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label={
-                          showPassword
-                            ? "hide the password"
-                            : "display the password"
-                        }
-                        onClick={handleClickShowPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
+                  autoFocus
+                  id="email"
+                  name="email"
+                  autoComplete="email"
+                  variant="outlined"
+                  error={emailError}
                 />
                 <div className={styles.placeForErrMassage}>
-                  {passwordError ? passwordErrorMessage : ""}
+                  {emailError ? emailErrorMessage : ""}
                 </div>
               </FormControl>
-            </Tooltip>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
-              Зарегистрироваться
-            </Button>
-          </Box>
-          <Divider>
-            <Typography sx={{ color: "text.secondary" }}>или</Typography>
-          </Divider>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography sx={{ textAlign: "center" }}>
-              Уже зарегистрированы?{" "}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: "center" }}
+              <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
+                Password
+              </FormLabel>
+              <Tooltip
+                placement="top-start"
+                arrow
+                disableFocusListener
+                title="Пожалуйста, придумайте хорошо защищенный пароль"
               >
-                Войти
-              </Link>
-            </Typography>
-          </Box>
-        </Card>
-      </SignUpContainer>
-    </AppTheme>
+                <FormControl error={passwordError}>
+                  <OutlinedInput
+                    fullWidth
+                    name="password"
+                    id="password"
+                    autoComplete="new-password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword
+                              ? "hide the password"
+                              : "display the password"
+                          }
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  <div className={styles.placeForErrMassage}>
+                    {passwordError ? passwordErrorMessage : ""}
+                  </div>
+                </FormControl>
+              </Tooltip>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={validateInputs}
+              >
+                Зарегистрироваться
+              </Button>
+            </Box>
+            <Divider>
+              <Typography sx={{ color: "text.secondary" }}>или</Typography>
+            </Divider>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography sx={{ textAlign: "center" }}>
+                Уже зарегистрированы?{" "}
+                <Link
+                  href="/material-ui/getting-started/templates/sign-in/"
+                  variant="body2"
+                  sx={{ alignSelf: "center" }}
+                >
+                  Войти
+                </Link>
+              </Typography>
+            </Box>
+          </Card>
+        </SignUpContainer>
+      </AppTheme>
+    </>
   );
 }
