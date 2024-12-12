@@ -4,6 +4,7 @@ import { ROUTES } from "./utils/constants";
 import SignUp from "./pages/sign-up/SignUp";
 import Main from "./pages/main/Main";
 import ProtectedRoute from "./components/protected-rout/ProtectedRoute";
+import { CssBaseline } from "@mui/material";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <CssBaseline />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;
