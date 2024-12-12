@@ -22,12 +22,13 @@ import {
   InputAdornment,
   Modal,
   OutlinedInput,
-  // Tooltip,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { userRegistration } from "../../utils/api/user-registration";
+import { userAuthorization } from "../../utils/api/user-authorization";
+
+import { useNavigate } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -98,6 +99,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     setAlertText(text);
   };
 
+  const navigate = useNavigate();
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const validateInputs = () => {
@@ -140,26 +143,15 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
     try {
       setLoading(true);
-      const res = await userRegistration({ email, password });
+      const res = await userAuthorization({ email, password });
+      console.log("res:", res);
       if (res.error === "internal_server_error") {
         showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
-      } else if (res.id) {
-        console.log("Регистрация прошла успешно");
-        showAlert(
-          "success",
-          "Регистрация прошла успешно!",
-          "Для активации аккаунта перейдите по ссылке в письме",
-        );
-      } else if (res.data.email) {
-        console.log("Ошибка в email:", res.data.email.toString());
-        showAlert("warning", "Ошибка в email:", res.data.email.toString());
-      } else if (res.data.password) {
-        console.log("Ошибка в password:", res.data.password.toString());
-        showAlert(
-          "warning",
-          "Ошибка в password:",
-          res.data.password.toString(),
-        );
+      } else if (res.error === "Unauthorized") {
+        showAlert("error", "Что-то пошло не так!", "Неверные логин или пароль");
+      } else if (res.access) {
+        localStorage.setItem("authToken", res.access);
+        navigate("/");
       }
     } catch (error) {
       console.error("Ошибка в handleSubmit:", error);
@@ -228,12 +220,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               <FormLabel htmlFor="password" style={{ marginBottom: "-9px" }}>
                 Password
               </FormLabel>
-              {/* <Tooltip
-                placement="top-start"
-                arrow
-                disableFocusListener
-                title="Пожалуйста, придумайте хорошо защищенный пароль"
-              > */}
               <FormControl error={passwordError}>
                 <OutlinedInput
                   fullWidth
@@ -281,7 +267,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               <Typography sx={{ textAlign: "center" }}>
                 Еще не зарегистрированы?{" "}
                 <Link
-                  href="/material-ui/getting-started/templates/sign-in/"
+                  href="/sign-up/"
                   variant="body2"
                   sx={{ alignSelf: "center" }}
                 >

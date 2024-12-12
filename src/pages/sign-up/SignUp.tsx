@@ -281,7 +281,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
               <Typography sx={{ textAlign: "center" }}>
                 Уже зарегистрированы?{" "}
                 <Link
-                  href="/material-ui/getting-started/templates/sign-in/"
+                  href="/sign-in/"
                   variant="body2"
                   sx={{ alignSelf: "center" }}
                 >
