@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
+import GetSecret from "../../components/get-secret/GetSecret";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -35,6 +36,9 @@ const rows = [
 const Main: FC = () => {
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
   const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
+  const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
+
+  const [secretTitle, setSecretTitle] = useState("");
 
   const handleClickOpenRemoveConfirm = () => {
     setOpenRemoveConfirm(true);
@@ -46,6 +50,13 @@ const Main: FC = () => {
 
   const handleClickAddSecretModal = () => setOpenAddSecretModal(true);
   const handleCloseAddSecretModal = () => setOpenAddSecretModal(false);
+
+  const handleClickGetSecretModal = (title: string) => {
+    setSecretTitle(title);
+    setOpenGetSecretModal(true);
+  };
+
+  const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
 
   return (
     <>
@@ -90,7 +101,11 @@ const Main: FC = () => {
                   <TableCell component="th" scope="row">
                     {row.date}
                   </TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleClickGetSecretModal(row.name)}>
+                      {row.name}
+                    </Button>
+                  </TableCell>
                   <TableCell>{row.receiver}</TableCell>
                   <TableCell>
                     <Button
@@ -132,7 +147,17 @@ const Main: FC = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <AddSecret onCancel={handleCloseAddSecretModal} />
+        <AddSecret onCancelAdd={handleCloseAddSecretModal} />
+      </Modal>
+      <Modal
+        open={openGetSecretModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <GetSecret
+          onCancelGet={handleCloseGetSecretModal}
+          secretName={secretTitle}
+        />
       </Modal>
     </>
   );

@@ -150,7 +150,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       } else if (res.error === "Unauthorized") {
         showAlert("error", "Что-то пошло не так!", "Неверные логин или пароль");
       } else if (res.access) {
-        localStorage.setItem("authToken", res.access);
+        sessionStorage.setItem("authToken", res.access);
         navigate("/");
       }
     } catch (error) {

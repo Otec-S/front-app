@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ProtectedRoute: FC<Props> = ({ children }) => {
-  const isAuthenticated = Boolean(localStorage.getItem("authToken"));
+  const isAuthenticated = Boolean(sessionStorage.getItem("authToken"));
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/sign-in" />;
 };

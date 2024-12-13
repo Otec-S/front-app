@@ -1,14 +1,14 @@
 import Box from "@mui/material/Box";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
+// import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { FC, useState } from "react";
 
-import styles from "./AddSecret.module.css";
+import styles from "./GetSecret.module.css";
 import {
   Button,
   // Alert,
@@ -23,7 +23,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface Props {
-  onCancelAdd: () => void;
+  secretName: string;
+  onCancelGet: () => void;
 }
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -45,7 +46,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const AddSecretContainer = styled(Stack)(({ theme }) => ({
+const GetSecretContainer = styled(Stack)(({ theme }) => ({
   height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
   minHeight: "100%",
   padding: theme.spacing(2),
@@ -68,34 +69,34 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
   // },
 }));
 
-const AddSecret: FC<Props> = ({ onCancelAdd }) => {
+const GetSecret: FC<Props> = ({ onCancelGet, secretName }) => {
   // const [open, setOpen] = useState(false);
-  const [secretNameError, setSecretNameError] = useState(false);
-  const [secretNameErrorMessage, setSecretNameErrorMessage] = useState("");
+  // const [secretNameError, setSecretNameError] = useState(false);
+  // const [secretNameErrorMessage, setSecretNameErrorMessage] = useState("");
 
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  // const [emailError, setEmailError] = useState(false);
+  // const [emailErrorMessage, setEmailErrorMessage] = useState("");
 
   const [secretPasswordError, setSecretPasswordError] = useState(false);
   const [secretPasswordErrorMessage, setSecretPasswordErrorMessage] =
     useState("");
 
-  const [repeatSecretPasswordError, setRepeatSecretPasswordError] =
-    useState(false);
-  const [
-    repeatSecretPasswordErrorMessage,
-    setRepeatSecretPasswordErrorMessage,
-  ] = useState("");
+  // const [repeatSecretPasswordError, setRepeatSecretPasswordError] =
+  //   useState(false);
+  // const [
+  //   repeatSecretPasswordErrorMessage,
+  //   setRepeatSecretPasswordErrorMessage,
+  // ] = useState("");
 
-  const [secretFileError, setSecretFileError] = useState(false);
-  const [secretFileErrorMessage, setSecretFileErrorMessage] = useState("");
+  // const [secretFileError, setSecretFileError] = useState(false);
+  // const [secretFileErrorMessage, setSecretFileErrorMessage] = useState("");
 
   const [showSecretPassword, setShowSecretPassword] = useState(false);
-  const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
-    useState(false);
+  // const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
+  useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [secretFile, setSecretFile] = useState<File | null>(null);
+  // const [secretFile, setSecretFile] = useState<File | null>(null);
   // const [alertText, setAlertText] = useState("");
   // const [alertTitle, setAlertTitle] = useState("");
   // const [alertStatus, setAlertStatus] = useState<
@@ -118,58 +119,58 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
   const handleClickShowSecretPassword = () =>
     setShowSecretPassword((show) => !show);
-  const handleClickShowRepeatSecretPassword = () =>
-    setShowRepeatSecretPassword((show) => !show);
+  // const handleClickShowRepeatSecretPassword = () =>
+  //   setShowRepeatSecretPassword((show) => !show);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      setSecretFile(files[0]);
-    }
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files;
+  //   if (files && files.length > 0) {
+  //     setSecretFile(files[0]);
+  //   }
+  // };
 
   const validateInputs = () => {
-    const secretName = document.getElementById(
-      "secretName",
-    ) as HTMLInputElement;
-    const email = document.getElementById("receiverEmail") as HTMLInputElement;
-    const secretFile = document.getElementById(
-      "secretFile",
-    ) as HTMLInputElement;
+    // const secretName = document.getElementById(
+    //   "secretName",
+    // ) as HTMLInputElement;
+    // const email = document.getElementById("receiverEmail") as HTMLInputElement;
+    // const secretFile = document.getElementById(
+    //   "secretFile",
+    // ) as HTMLInputElement;
     const secretPassword = document.getElementById(
       "secretPassword",
     ) as HTMLInputElement;
-    const repeatSecretPassword = document.getElementById(
-      "repeatSecretPassword",
-    ) as HTMLInputElement;
+    // const repeatSecretPassword = document.getElementById(
+    //   "repeatSecretPassword",
+    // ) as HTMLInputElement;
 
     let isValid = true;
 
-    if (!secretName.value) {
-      setSecretNameError(true);
-      setSecretNameErrorMessage("Введите наименование секрета");
-      isValid = false;
-    } else {
-      setSecretNameError(false);
-      setSecretNameErrorMessage("");
-    }
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Введите корректный email");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
-    }
+    // if (!secretName.value) {
+    //   setSecretNameError(true);
+    //   setSecretNameErrorMessage("Введите наименование секрета");
+    //   isValid = false;
+    // } else {
+    //   setSecretNameError(false);
+    //   setSecretNameErrorMessage("");
+    // }
+    // if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    //   setEmailError(true);
+    //   setEmailErrorMessage("Введите корректный email");
+    //   isValid = false;
+    // } else {
+    //   setEmailError(false);
+    //   setEmailErrorMessage("");
+    // }
 
-    if (!secretFile.value) {
-      setSecretFileError(true);
-      setSecretFileErrorMessage("Выберите файл с секретом");
-      isValid = false;
-    } else {
-      setSecretFileError(false);
-      setSecretFileErrorMessage("");
-    }
+    // if (!secretFile.value) {
+    //   setSecretFileError(true);
+    //   setSecretFileErrorMessage("Выберите файл с секретом");
+    //   isValid = false;
+    // } else {
+    //   setSecretFileError(false);
+    //   setSecretFileErrorMessage("");
+    // }
 
     if (!secretPassword.value) {
       setSecretPasswordError(true);
@@ -180,18 +181,18 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
       setSecretPasswordErrorMessage("");
     }
 
-    if (!repeatSecretPassword.value) {
-      setRepeatSecretPasswordError(true);
-      setRepeatSecretPasswordErrorMessage("Повторите пароль для секрета");
-      isValid = false;
-    } else if (secretPassword.value !== repeatSecretPassword.value) {
-      setRepeatSecretPasswordError(true);
-      setRepeatSecretPasswordErrorMessage("Пароли не совпадают");
-      isValid = false;
-    } else {
-      setRepeatSecretPasswordError(false);
-      setRepeatSecretPasswordErrorMessage("");
-    }
+    // if (!repeatSecretPassword.value) {
+    //   setRepeatSecretPasswordError(true);
+    //   setRepeatSecretPasswordErrorMessage("Повторите пароль для секрета");
+    //   isValid = false;
+    // } else if (secretPassword.value !== repeatSecretPassword.value) {
+    //   setRepeatSecretPasswordError(true);
+    //   setRepeatSecretPasswordErrorMessage("Пароли не совпадают");
+    //   isValid = false;
+    // } else {
+    //   setRepeatSecretPasswordError(false);
+    //   setRepeatSecretPasswordErrorMessage("");
+    // }
 
     return isValid;
   };
@@ -242,14 +243,14 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
         </Box>
       </Modal> */}
 
-      <AddSecretContainer direction="column" justifyContent="space-between">
+      <GetSecretContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
-            component="h1"
+            component="h2"
             variant="h4"
             sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
           >
-            Добавление секрета
+            {secretName}
           </Typography>
 
           <Box
@@ -257,51 +258,11 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
             // onSubmit={handleSubmit}
             sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
-            <FormControl>
-              <FormLabel htmlFor="secretName">Название секрета</FormLabel>
-              <TextField
-                fullWidth
-                autoFocus
-                id="secretName"
-                name="secretName"
-                variant="outlined"
-                error={secretNameError}
-              />
-              <div className={styles.placeForErrMassage}>
-                {secretNameError ? secretNameErrorMessage : ""}
-              </div>
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="receiverEmail">Email получателя</FormLabel>
-              <TextField
-                fullWidth
-                id="receiverEmail"
-                name="receiverEmail"
-                variant="outlined"
-                error={emailError}
-              />
-              <div className={styles.placeForErrMassage}>
-                {emailError ? emailErrorMessage : ""}
-              </div>
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="secretFile">Файл с секретом</FormLabel>
-              <input
-                type="file"
-                id="secretFile"
-                name="secretFile"
-                onChange={handleFileChange}
-              />
-              <div className={styles.placeForErrMassage}>
-                {secretFileError ? secretFileErrorMessage : ""}
-              </div>
-            </FormControl>
-
             <FormLabel
               htmlFor="secretPassword"
               style={{ marginBottom: "-9px" }}
             >
-              Пароль для секрета
+              Пароль для получения секрета
             </FormLabel>
             <FormControl error={secretPasswordError}>
               <OutlinedInput
@@ -329,44 +290,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 {secretPasswordError ? secretPasswordErrorMessage : ""}
               </div>
             </FormControl>
-            <FormLabel
-              htmlFor="repeatSecretPassword"
-              style={{ marginBottom: "-9px" }}
-            >
-              Повторите пароль для секрета
-            </FormLabel>
-            <FormControl error={repeatSecretPasswordError}>
-              <OutlinedInput
-                fullWidth
-                name="repeatSecretPassword"
-                id="repeatSecretPassword"
-                type={showRepeatSecretPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={
-                        showRepeatSecretPassword
-                          ? "hide the password"
-                          : "display the password"
-                      }
-                      onClick={handleClickShowRepeatSecretPassword}
-                      edge="end"
-                    >
-                      {showRepeatSecretPassword ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              <div className={styles.placeForErrMassage}>
-                {repeatSecretPasswordError
-                  ? repeatSecretPasswordErrorMessage
-                  : ""}
-              </div>
-            </FormControl>
+
             <LoadingButton
               // type="submit"
               variant="contained"
@@ -375,15 +299,15 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               onClick={validateInputs}
               // loading={loading}
             >
-              Добавить секрет
+              Скачать секрет
             </LoadingButton>
-            <Button variant="outlined" fullWidth onClick={onCancelAdd}>
+            <Button variant="outlined" fullWidth onClick={onCancelGet}>
               Отмена
             </Button>
           </Box>
         </Card>
-      </AddSecretContainer>
+      </GetSecretContainer>
     </>
   );
 };
-export default AddSecret;
+export default GetSecret;
