@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Modal,
   Paper,
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FC, useState } from "react";
+import AddSecret from "../../components/add-secret/AddSecret";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -32,6 +34,7 @@ const rows = [
 
 const Main: FC = () => {
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
+  const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
 
   const handleClickOpenRemoveConfirm = () => {
     setOpenRemoveConfirm(true);
@@ -40,6 +43,9 @@ const Main: FC = () => {
   const handleCloseRemoveConfirm = () => {
     setOpenRemoveConfirm(false);
   };
+
+  const handleClickAddSecretModal = () => setOpenAddSecretModal(true);
+  const handleCloseAddSecretModal = () => setOpenAddSecretModal(false);
 
   return (
     <>
@@ -55,7 +61,11 @@ const Main: FC = () => {
         <Box sx={{ alignSelf: "center" }}>
           <h1>УПРАВЛЕНИЕ СЕКРЕТАМИ</h1>
         </Box>
-        <Button variant="contained" sx={{ alignSelf: "flex-start" }}>
+        <Button
+          variant="contained"
+          sx={{ alignSelf: "flex-start" }}
+          onClick={handleClickAddSecretModal}
+        >
           Добавить секрет
         </Button>
         <TableContainer
@@ -103,20 +113,27 @@ const Main: FC = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title" sx={{ color: "red" }}>
-          {"Уверены, что хотите безвозвратно удалить секрет?"}
+          {"Безвозвратно удалить секрет?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Удаление секрета приведет к безвозвратной потере данных.
+            Удаление секрета приведет к полной потере данных.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseRemoveConfirm} autoFocus>
-            Отменить удаление
+            Отменить
           </Button>
-          <Button onClick={handleCloseRemoveConfirm}>Удалить данные</Button>
+          <Button onClick={handleCloseRemoveConfirm}>Удалить</Button>
         </DialogActions>
       </Dialog>
+      <Modal
+        open={openAddSecretModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <AddSecret onCancel={handleCloseAddSecretModal} />
+      </Modal>
     </>
   );
 };
