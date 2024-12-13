@@ -1,6 +1,11 @@
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -9,7 +14,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -26,6 +31,16 @@ const rows = [
 ];
 
 const Main: FC = () => {
+  const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
+
+  const handleClickOpenRemoveConfirm = () => {
+    setOpenRemoveConfirm(true);
+  };
+
+  const handleCloseRemoveConfirm = () => {
+    setOpenRemoveConfirm(false);
+  };
+
   return (
     <>
       <Box
@@ -68,7 +83,12 @@ const Main: FC = () => {
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.receiver}</TableCell>
                   <TableCell>
-                    <Button variant="outlined">Удалить</Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleClickOpenRemoveConfirm}
+                    >
+                      Удалить
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -76,6 +96,27 @@ const Main: FC = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Dialog
+        open={openRemoveConfirm}
+        onClose={handleCloseRemoveConfirm}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ color: "red" }}>
+          {"Уверены, что хотите безвозвратно удалить секрет?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Удаление секрета приведет к безвозвратной потере данных.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRemoveConfirm} autoFocus>
+            Отменить удаление
+          </Button>
+          <Button onClick={handleCloseRemoveConfirm}>Удалить данные</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

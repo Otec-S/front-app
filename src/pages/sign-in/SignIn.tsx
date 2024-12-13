@@ -12,7 +12,7 @@ import { styled } from "@mui/material/styles";
 import AppTheme from "../../shared-theme/AppTheme";
 import ColorModeSelect from "../../shared-theme/ColorModeSelect";
 import { useState } from "react";
-import Logo from "../../assets/TB-Logo-clear.png";
+import Logo from "@assets/TB-Logo-clear.png";
 
 import styles from "./SignIn.module.css";
 import {
