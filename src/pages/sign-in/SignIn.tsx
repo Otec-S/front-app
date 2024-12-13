@@ -247,7 +247,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                   {passwordError ? passwordErrorMessage : ""}
                 </div>
               </FormControl>
-              {/* </Tooltip> */}
               <LoadingButton
                 type="submit"
                 variant="contained"
