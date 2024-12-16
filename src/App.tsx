@@ -5,6 +5,8 @@ import SignUp from "./pages/sign-up/SignUp";
 import Main from "./pages/main/Main";
 import ProtectedRoute from "./components/protected-rout/ProtectedRoute";
 import { CssBaseline } from "@mui/material";
+import "./utils/fonts";
+import "./App.module.css";
 
 const router = createBrowserRouter([
   {

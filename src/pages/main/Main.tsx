@@ -132,7 +132,7 @@ const Main: FC = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Удаление секрета приведет к полной потере данных.
+            Удаление секрета приведет к полной потере его данных.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
