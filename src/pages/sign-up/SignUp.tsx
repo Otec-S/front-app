@@ -177,7 +177,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
         aria-describedby="modal-modal-description"
       >
         <Box className={styles.modal}>
-          <Alert severity={alertStatus}>
+          <Alert severity={alertStatus} sx={{ borderRadius: "5px" }}>
             <AlertTitle>{alertTitle}</AlertTitle>
             {alertText}
           </Alert>

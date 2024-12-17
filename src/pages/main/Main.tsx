@@ -146,6 +146,7 @@ const Main: FC = () => {
         open={openAddSecretModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ bordeRadius: "5px" }}
       >
         <AddSecret onCancelAdd={handleCloseAddSecretModal} />
       </Modal>
@@ -153,6 +154,7 @@ const Main: FC = () => {
         open={openGetSecretModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ bordeRadius: "5px" }}
       >
         <GetSecret
           onCancelGet={handleCloseGetSecretModal}
