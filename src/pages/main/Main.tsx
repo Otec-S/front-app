@@ -18,6 +18,7 @@ import {
 import { FC, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
 import GetSecret from "../../components/get-secret/GetSecret";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -70,7 +71,7 @@ const Main: FC = () => {
         }}
       >
         <Box sx={{ alignSelf: "center" }}>
-          <h1>УПРАВЛЕНИЕ СЕКРЕТАМИ</h1>
+          <h1 style={{ letterSpacing: "5px" }}>УПРАВЛЕНИЕ СЕКРЕТАМИ</h1>
         </Box>
         <Button
           variant="contained"
@@ -109,10 +110,10 @@ const Main: FC = () => {
                   <TableCell>{row.receiver}</TableCell>
                   <TableCell>
                     <Button
-                      variant="outlined"
+                      variant="text"
                       onClick={handleClickOpenRemoveConfirm}
                     >
-                      Удалить
+                      <DeleteForeverIcon />
                     </Button>
                   </TableCell>
                 </TableRow>
