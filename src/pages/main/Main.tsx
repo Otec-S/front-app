@@ -19,6 +19,7 @@ import { FC, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
 import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Encrypt } from "../../components/encrypt/Encrypt";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -122,6 +123,7 @@ const Main: FC = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Encrypt plaintext="Добрый день, дорогая редакция" />
       <Dialog
         open={openRemoveConfirm}
         onClose={handleCloseRemoveConfirm}
