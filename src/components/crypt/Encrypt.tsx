@@ -87,11 +87,7 @@ export const Encrypt: FC<Props> = ({ plaintext }) => {
       }
     };
     encryptData();
-  }, [plaintext, encryptionKey]);
-
-  console.log("Encryption Key:", encryptionKey);
-  console.log("Trimmed Encryption Key:", encryptionKey.trim());
-  console.log("Key Length:", encryptionKey.length);
+  }, [plaintext]);
 
   if (!encryptionResult) return <div>Шифрование...</div>;
 
