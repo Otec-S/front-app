@@ -78,7 +78,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [alertText, setAlertText] = useState("");
+  const [alertText, setAlertText] = useState<string | JSX.Element>("");
   const [alertTitle, setAlertTitle] = useState("");
   const [alertStatus, setAlertStatus] = useState<
     "success" | "error" | "warning" | "info"
@@ -90,7 +90,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const showAlert = (
     status: "success" | "error" | "warning" | "info",
     title: string,
-    text: string,
+    text: string | JSX.Element,
   ) => {
     handleOpen();
     setAlertStatus(status);
@@ -154,11 +154,19 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
         console.log("Ошибка в email:", res.data.email.toString());
         showAlert("warning", "Ошибка в email:", res.data.email.toString());
       } else if (res.data.password) {
-        console.log("Ошибка в password:", res.data.password.toString());
+        console.log("Ошибка в password:", res.data.password);
         showAlert(
           "warning",
           "Ошибка в password:",
-          res.data.password.toString(),
+          typeof res.data.password === "string" ? (
+            res.data.password
+          ) : (
+            <ul>
+              {res.data.password.map((item: string, index: number) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          ),
         );
       }
     } catch (error) {
