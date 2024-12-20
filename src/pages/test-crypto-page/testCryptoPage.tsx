@@ -1,39 +1,67 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useEncrypt } from "../../utils/hooks/useEncrypt";
 import { useDecrypt } from "../../utils/hooks/useDecrypt";
-import { encryptionKey } from "../../utils/generateBase64Key";
+import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
 
 const TestCryptoPage: FC = () => {
-  // Шифрование
+  const [encryptionKey, setEncryptionKey] = useState("");
+  const [error, setError] = useState("");
+
+  const handleGenerateKey = async (password: string) => {
+    try {
+      const key = await generateKeyFromPassword(password);
+      setEncryptionKey(key);
+      console.log("Generated Key from Password:", key);
+    } catch (error) {
+      setError("Ошибка генерации ключа");
+      console.log("Error generating key:", error);
+    }
+  };
+
   const {
     encryptData,
     ciphertext,
     iv,
     error: encryptError,
-  } = useEncrypt("Здавствуйте дорагая редакция", encryptionKey);
+  } = useEncrypt(
+    "Все счастливые семьи похожи друг на друга, каждое несчастливое семейство несчастливо по-своему.",
+    encryptionKey,
+  );
 
-  // Расшифрование
   const {
     decryptData,
     plaintext,
     error: decryptError,
   } = useDecrypt(ciphertext || "", iv || "", encryptionKey);
 
-  // Шифрование при монтировании компонента
+  // Шифрование при изменении encryptionKey
   useEffect(() => {
-    encryptData();
-  }, []); // Переместите функцию из зависимостей, поскольку она мемоизируется и не должна изменяться
+    if (encryptionKey) {
+      encryptData();
+    }
+  }, [encryptionKey]);
+  // useEffect(() => {
+  //   encryptData();
+  // }, []);
 
   // Расшифрование, когда ciphertext и iv доступны
   useEffect(() => {
     if (ciphertext && iv) {
       decryptData();
     }
-  }, [ciphertext, iv, decryptData]); // Убедитесь, что decryptData также не меняется без необходимости
+  }, [ciphertext, iv, decryptData]);
 
   return (
     <div>
       <h1>Шифрование и расшифрование</h1>
+
+      <input
+        type="password"
+        onChange={(e) => handleGenerateKey(e.target.value)}
+        placeholder="Введите пароль"
+      />
+      {encryptionKey && <p>Generated Key: {encryptionKey}</p>}
+      {error && <p>{error}</p>}
 
       {encryptError && <div>Ошибка шифрования: {encryptError}</div>}
       {decryptError && <div>Ошибка расшифровки: {decryptError}</div>}

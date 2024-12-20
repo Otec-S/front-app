@@ -7,13 +7,18 @@ export const useEncrypt = (plaintext: string, encryptionKey: string) => {
 
   const encryptData = async () => {
     try {
+      // Generate a random 12-byte initialization vector
       const ivArray = window.crypto.getRandomValues(new Uint8Array(12));
+      // Convert the initialization vector to a base64-encoded string
       const ivBase64 = btoa(String.fromCharCode(...ivArray));
+      // Encode the plaintext string to a Uint8Array
       const encodedPlaintext = new TextEncoder().encode(plaintext);
+      // Decode the encryption key from a base64-encoded string to a Uint8Array
       const keyRaw = Uint8Array.from(window.atob(encryptionKey), (c) =>
         c.charCodeAt(0),
       );
 
+      // Import the encryption key TODO: откуда?
       const secretKey = await window.crypto.subtle.importKey(
         "raw",
         keyRaw,
@@ -22,12 +27,14 @@ export const useEncrypt = (plaintext: string, encryptionKey: string) => {
         ["encrypt"],
       );
 
+      // Encrypt the plaintext
       const encrypted = await window.crypto.subtle.encrypt(
         { name: "AES-GCM", iv: ivArray },
         secretKey,
         encodedPlaintext,
       );
 
+      // Convert the encrypted data to a base64-encoded string
       setCiphertext(btoa(String.fromCharCode(...new Uint8Array(encrypted))));
       setIv(ivBase64);
     } catch (error) {
@@ -39,5 +46,6 @@ export const useEncrypt = (plaintext: string, encryptionKey: string) => {
     }
   };
 
+  // Return the ciphertext, initialization vector, error, and encryptData function
   return { ciphertext, iv, error, encryptData };
 };
