@@ -12,7 +12,7 @@ import { styled } from "@mui/material/styles";
 import AppTheme from "../../shared-theme/AppTheme";
 import ColorModeSelect from "../../shared-theme/ColorModeSelect";
 import { useState } from "react";
-import Logo from "../../assets/TB-Logo-clear.png";
+import Logo from "@assets/logo-legkeep.png";
 
 import styles from "./SignUp.module.css";
 import {
@@ -199,19 +199,28 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
         />
         <SignUpContainer direction="column" justifyContent="space-between">
           <Card variant="outlined">
-            <img
-              className={styles.logo}
-              src={Logo}
-              alt="Логотип Трансфербокс"
-            />
-            <Typography
-              component="h1"
-              variant="h4"
-              sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-            >
-              Регистрация
-            </Typography>
-
+            <Box className={styles.box}>
+              <img
+                className={styles.logo}
+                src={Logo}
+                alt="Логотип Легаси Кипер"
+              />
+              <Typography
+                component="h1"
+                variant="h4"
+                sx={{
+                  width: "100%",
+                  fontSize: "clamp(2rem, 10vw, 2.15rem)",
+                  margin: "25px 0 0 10px",
+                  "@media (max-width:480px)": {
+                    width: "auto",
+                    margin: "0 0 0 0",
+                  },
+                }}
+              >
+                Регистрация
+              </Typography>
+            </Box>
             <Box
               component="form"
               onSubmit={handleSubmit}
