@@ -187,7 +187,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               <img
                 className={styles.logo}
                 src={Logo}
-                alt="Логотип Трансфербокс"
+                alt="Логотип Легаси Кипер"
               />
               <Typography
                 component="h1"
