@@ -11,16 +11,15 @@ import { FC, useState } from "react";
 import styles from "./AddSecret.module.css";
 import {
   Button,
-  // Alert,
-  // AlertTitle,
   IconButton,
   InputAdornment,
-  // Modal,
   OutlinedInput,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
+import { useEncrypt } from "../../utils/hooks/useEncrypt";
 
 interface Props {
   onCancelAdd: () => void;
@@ -52,34 +51,18 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     padding: theme.spacing(4),
   },
-  // "&::before": {
-  //   content: '""',
-  //   display: "block",
-  //   position: "absolute",
-  //   zIndex: -1,
-  //   inset: 0,
-  //   backgroundImage:
-  //     "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-  //   backgroundRepeat: "no-repeat",
-  //   ...theme.applyStyles("dark", {
-  //     backgroundImage:
-  //       "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-  //   }),
-  // },
 }));
 
 const AddSecret: FC<Props> = ({ onCancelAdd }) => {
-  // const [open, setOpen] = useState(false);
   const [secretNameError, setSecretNameError] = useState(false);
   const [secretNameErrorMessage, setSecretNameErrorMessage] = useState("");
-
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
-
+  const [secretTextError, setSecretTextError] = useState(false);
+  const [secretTextErrorMessage, setSecretTextErrorMessage] = useState("");
   const [secretPasswordError, setSecretPasswordError] = useState(false);
   const [secretPasswordErrorMessage, setSecretPasswordErrorMessage] =
     useState("");
-
   const [repeatSecretPasswordError, setRepeatSecretPasswordError] =
     useState(false);
   const [
@@ -87,55 +70,48 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     setRepeatSecretPasswordErrorMessage,
   ] = useState("");
 
-  const [secretFileError, setSecretFileError] = useState(false);
-  const [secretFileErrorMessage, setSecretFileErrorMessage] = useState("");
-
   const [showSecretPassword, setShowSecretPassword] = useState(false);
   const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
     useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [secretFile, setSecretFile] = useState<File | null>(null);
-  // const [alertText, setAlertText] = useState("");
-  // const [alertTitle, setAlertTitle] = useState("");
-  // const [alertStatus, setAlertStatus] = useState<
-  //   "success" | "error" | "warning" | "info"
-  // >("success");
-  // const [loading, setLoading] = useState(false);
+  // TODO:
+  const [password, setPassword] = useState("");
+  const [encryptionKey, setEncryptionKey] = useState("");
+  // TODO: выведи в подсказку пользователю, еси ошибка эта
+  const [encryptionKeyError, setEncryptionKeyError] = useState("");
 
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
-  // const showAlert = (
-  //   status: "success" | "error" | "warning" | "info",
-  //   title: string,
-  //   text: string,
-  // ) => {
-  //   handleOpen();
-  //   setAlertStatus(status);
-  //   setAlertTitle(title);
-  //   setAlertText(text);
-  // };
+  const handleGenerateKey = async (password: string) => {
+    try {
+      const key = await generateKeyFromPassword(password);
+      setEncryptionKey(key);
+      console.log("Ключ шифрования из пароля:", key);
+    } catch (error) {
+      setEncryptionKeyError("Ошибка генерации ключа");
+      console.log("Error generating key:", error);
+    }
+  };
+
+  const {
+    encryptData,
+    ciphertext,
+    iv,
+    error: encryptError,
+  } = useEncrypt(
+    "Все счастливые семьи похожи друг на друга, каждое несчастливое семейство несчастливо по-своему.",
+    encryptionKey,
+  );
 
   const handleClickShowSecretPassword = () =>
     setShowSecretPassword((show) => !show);
   const handleClickShowRepeatSecretPassword = () =>
     setShowRepeatSecretPassword((show) => !show);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      setSecretFile(files[0]);
-    }
-  };
-
   const validateInputs = () => {
     const secretName = document.getElementById(
       "secretName",
     ) as HTMLInputElement;
     const email = document.getElementById("receiverEmail") as HTMLInputElement;
-    const secretFile = document.getElementById(
-      "secretFile",
-    ) as HTMLInputElement;
+    const text = document.getElementById("secretText") as HTMLInputElement;
     const secretPassword = document.getElementById(
       "secretPassword",
     ) as HTMLInputElement;
@@ -153,6 +129,14 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
       setSecretNameError(false);
       setSecretNameErrorMessage("");
     }
+    if (!text.value) {
+      setSecretTextError(true);
+      setSecretTextErrorMessage("Введите текст секрета");
+      isValid = false;
+    } else {
+      setSecretTextError(false);
+      setSecretTextErrorMessage("");
+    }
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage("Введите корректный email");
@@ -160,15 +144,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     } else {
       setEmailError(false);
       setEmailErrorMessage("");
-    }
-
-    if (!secretFile.value) {
-      setSecretFileError(true);
-      setSecretFileErrorMessage("Выберите файл с секретом");
-      isValid = false;
-    } else {
-      setSecretFileError(false);
-      setSecretFileErrorMessage("");
     }
 
     if (!secretPassword.value) {
@@ -194,6 +169,13 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     }
 
     return isValid;
+  };
+
+  const handleButtonClick = () => {
+    if (validateInputs()) {
+      // Валидация полей перед генерацией ключа
+      handleGenerateKey(password); // Используйте текущее значение состояния
+    }
   };
 
   // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -228,20 +210,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
   return (
     <>
-      {/* <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box className={styles.modal}>
-          <Alert severity={alertStatus}>
-            <AlertTitle>{alertTitle}</AlertTitle>
-            {alertText}
-          </Alert>
-        </Box>
-      </Modal> */}
-
       <AddSecretContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -285,18 +253,20 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               </div>
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="secretFile">Файл с секретом</FormLabel>
-              <input
-                type="file"
-                id="secretFile"
-                name="secretFile"
-                onChange={handleFileChange}
+              <FormLabel htmlFor="secretText">Текст секрета</FormLabel>
+              <TextField
+                fullWidth
+                multiline={true}
+                id="secretText"
+                name="secretText"
+                variant="outlined"
+                error={secretTextError}
+                // sx={{ minHeight: "200px" }}
               />
               <div className={styles.placeForErrMassage}>
-                {secretFileError ? secretFileErrorMessage : ""}
+                {secretTextError ? secretTextErrorMessage : ""}
               </div>
             </FormControl>
-
             <FormLabel
               htmlFor="secretPassword"
               style={{ marginBottom: "-9px" }}
@@ -340,6 +310,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 fullWidth
                 name="repeatSecretPassword"
                 id="repeatSecretPassword"
+                onChange={(e) => setPassword(e.target.value)}
                 type={showRepeatSecretPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
@@ -372,7 +343,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               variant="contained"
               fullWidth
               color="primary"
-              onClick={validateInputs}
+              onClick={handleButtonClick}
               // loading={loading}
             >
               Добавить секрет
