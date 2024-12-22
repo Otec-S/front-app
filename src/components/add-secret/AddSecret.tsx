@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import styles from "./AddSecret.module.css";
 import {
@@ -76,6 +76,8 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
   // TODO:
   const [password, setPassword] = useState("");
+  const [initialText, setInitialText] = useState("");
+  console.log("initialText:", initialText);
   const [encryptionKey, setEncryptionKey] = useState("");
   // TODO: выведи в подсказку пользователю, еси ошибка эта
   const [encryptionKeyError, setEncryptionKeyError] = useState("");
@@ -96,10 +98,34 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     ciphertext,
     iv,
     error: encryptError,
-  } = useEncrypt(
-    "Все счастливые семьи похожи друг на друга, каждое несчастливое семейство несчастливо по-своему.",
-    encryptionKey,
-  );
+  } = useEncrypt(initialText, encryptionKey);
+
+  // Шифрование при изменении encryptionKey
+  // useEffect(() => {
+  //   if (encryptionKey) {
+  //     encryptData();
+  //     console.log("ciphertext:", ciphertext);
+  //   }
+  // }, [encryptionKey]);
+
+  useEffect(() => {
+    const processEncryption = async () => {
+      if (encryptionKey && initialText) {
+        try {
+          // Ждем завершения шифрования
+          await encryptData(); // Предполагается, что encryptData возвращает промис
+
+          // Теперь можно безопасно использовать ciphertext
+          console.log("ciphertext:", ciphertext);
+          // await sendEncryptedData(ciphertext); // Отправка зашифрованного текста на сервер
+        } catch (error) {
+          console.error("Ошибка при шифровании или отправке данных:", error);
+        }
+      }
+    };
+
+    processEncryption(); // Вызов функции
+  }, [encryptionKey, initialText]);
 
   const handleClickShowSecretPassword = () =>
     setShowSecretPassword((show) => !show);
@@ -261,6 +287,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 name="secretText"
                 variant="outlined"
                 error={secretTextError}
+                onChange={(e) => setInitialText(e.target.value)}
                 // sx={{ minHeight: "200px" }}
               />
               <div className={styles.placeForErrMassage}>
