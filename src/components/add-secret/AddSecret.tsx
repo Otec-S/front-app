@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import styles from "./AddSecret.module.css";
 import {
@@ -23,6 +23,14 @@ import { useEncrypt } from "../../utils/hooks/useEncrypt";
 
 interface Props {
   onCancelAdd: () => void;
+}
+
+interface Errors {
+  secretName: string;
+  email: string;
+  secretText: string;
+  secretPassword: string;
+  repeatSecretPassword: string;
 }
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -54,21 +62,19 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const AddSecret: FC<Props> = ({ onCancelAdd }) => {
-  const [secretNameError, setSecretNameError] = useState(false);
-  const [secretNameErrorMessage, setSecretNameErrorMessage] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [secretTextError, setSecretTextError] = useState(false);
-  const [secretTextErrorMessage, setSecretTextErrorMessage] = useState("");
-  const [secretPasswordError, setSecretPasswordError] = useState(false);
-  const [secretPasswordErrorMessage, setSecretPasswordErrorMessage] =
-    useState("");
-  const [repeatSecretPasswordError, setRepeatSecretPasswordError] =
-    useState(false);
-  const [
-    repeatSecretPasswordErrorMessage,
-    setRepeatSecretPasswordErrorMessage,
-  ] = useState("");
+  const [errors, setErrors] = useState<Errors>({
+    secretName: "",
+    email: "",
+    secretText: "",
+    secretPassword: "",
+    repeatSecretPassword: "",
+  });
+
+  const secretNameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const secretTextRef = useRef<HTMLInputElement>(null);
+  const secretPasswordRef = useRef<HTMLInputElement>(null);
+  const repeatSecretPasswordRef = useRef<HTMLInputElement>(null);
 
   const [showSecretPassword, setShowSecretPassword] = useState(false);
   const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
@@ -132,68 +138,52 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
   const handleClickShowRepeatSecretPassword = () =>
     setShowRepeatSecretPassword((show) => !show);
 
-  const validateInputs = () => {
-    const secretName = document.getElementById(
-      "secretName",
-    ) as HTMLInputElement;
-    const email = document.getElementById("receiverEmail") as HTMLInputElement;
-    const text = document.getElementById("secretText") as HTMLInputElement;
-    const secretPassword = document.getElementById(
-      "secretPassword",
-    ) as HTMLInputElement;
-    const repeatSecretPassword = document.getElementById(
-      "repeatSecretPassword",
-    ) as HTMLInputElement;
-
+  const validateInputs = (): boolean => {
     let isValid = true;
 
-    if (!secretName.value) {
-      setSecretNameError(true);
-      setSecretNameErrorMessage("Введите наименование секрета");
+    const secretName = secretNameRef.current?.value || "";
+    const email = emailRef.current?.value || "";
+    const secretText = secretTextRef.current?.value || "";
+    const secretPassword = secretPasswordRef.current?.value || "";
+    const repeatSecretPassword = repeatSecretPasswordRef.current?.value || "";
+
+    const newErrors: Errors = {
+      secretName: "",
+      email: "",
+      secretText: "",
+      secretPassword: "",
+      repeatSecretPassword: "",
+    };
+
+    if (!secretName) {
+      newErrors.secretName = "Введите наименование секрета";
       isValid = false;
-    } else {
-      setSecretNameError(false);
-      setSecretNameErrorMessage("");
-    }
-    if (!text.value) {
-      setSecretTextError(true);
-      setSecretTextErrorMessage("Введите текст секрета");
-      isValid = false;
-    } else {
-      setSecretTextError(false);
-      setSecretTextErrorMessage("");
-    }
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Введите корректный email");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
     }
 
-    if (!secretPassword.value) {
-      setSecretPasswordError(true);
-      setSecretPasswordErrorMessage("Введите пароль для секрета");
+    if (!secretText) {
+      newErrors.secretText = "Введите текст секрета";
       isValid = false;
-    } else {
-      setSecretPasswordError(false);
-      setSecretPasswordErrorMessage("");
     }
 
-    if (!repeatSecretPassword.value) {
-      setRepeatSecretPasswordError(true);
-      setRepeatSecretPasswordErrorMessage("Повторите пароль для секрета");
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Введите корректный email";
       isValid = false;
-    } else if (secretPassword.value !== repeatSecretPassword.value) {
-      setRepeatSecretPasswordError(true);
-      setRepeatSecretPasswordErrorMessage("Пароли не совпадают");
-      isValid = false;
-    } else {
-      setRepeatSecretPasswordError(false);
-      setRepeatSecretPasswordErrorMessage("");
     }
 
+    if (!secretPassword) {
+      newErrors.secretPassword = "Введите пароль для секрета";
+      isValid = false;
+    }
+
+    if (!repeatSecretPassword) {
+      newErrors.repeatSecretPassword = "Повторите пароль для секрета";
+      isValid = false;
+    } else if (secretPassword !== repeatSecretPassword) {
+      newErrors.repeatSecretPassword = "Пароли не совпадают";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
     return isValid;
   };
 
@@ -255,43 +245,45 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               <FormLabel htmlFor="secretName">Название секрета</FormLabel>
               <TextField
                 fullWidth
+                inputRef={secretNameRef}
                 autoFocus
                 id="secretName"
                 name="secretName"
                 variant="outlined"
-                error={secretNameError}
+                error={!!errors.secretName}
               />
               <div className={styles.placeForErrMassage}>
-                {secretNameError ? secretNameErrorMessage : ""}
+                {errors.secretName}
               </div>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="receiverEmail">Email получателя</FormLabel>
               <TextField
                 fullWidth
+                inputRef={emailRef}
                 id="receiverEmail"
                 name="receiverEmail"
                 variant="outlined"
-                error={emailError}
+                error={!!errors.email}
               />
-              <div className={styles.placeForErrMassage}>
-                {emailError ? emailErrorMessage : ""}
-              </div>
+              <div className={styles.placeForErrMassage}>{errors.email}</div>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="secretText">Текст секрета</FormLabel>
               <TextField
                 fullWidth
+                inputRef={secretTextRef}
                 multiline={true}
                 id="secretText"
                 name="secretText"
                 variant="outlined"
-                error={secretTextError}
+                error={!!errors.secretText}
+                // helperText={errors.secretText}
                 onChange={(e) => setInitialText(e.target.value)}
                 // sx={{ minHeight: "200px" }}
               />
               <div className={styles.placeForErrMassage}>
-                {secretTextError ? secretTextErrorMessage : ""}
+                {errors.secretText}
               </div>
             </FormControl>
             <FormLabel
@@ -300,10 +292,11 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
             >
               Пароль для секрета
             </FormLabel>
-            <FormControl error={secretPasswordError}>
+            <FormControl error={!!errors.secretPassword}>
               <OutlinedInput
                 fullWidth
                 name="secretPassword"
+                inputRef={secretPasswordRef}
                 id="secretPassword"
                 type={showSecretPassword ? "text" : "password"}
                 endAdornment={
@@ -323,7 +316,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 }
               />
               <div className={styles.placeForErrMassage}>
-                {secretPasswordError ? secretPasswordErrorMessage : ""}
+                {errors.secretPassword}
               </div>
             </FormControl>
             <FormLabel
@@ -332,9 +325,10 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
             >
               Повторите пароль для секрета
             </FormLabel>
-            <FormControl error={repeatSecretPasswordError}>
+            <FormControl error={!!errors.repeatSecretPassword}>
               <OutlinedInput
                 fullWidth
+                inputRef={repeatSecretPasswordRef}
                 name="repeatSecretPassword"
                 id="repeatSecretPassword"
                 onChange={(e) => setPassword(e.target.value)}
@@ -360,9 +354,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 }
               />
               <div className={styles.placeForErrMassage}>
-                {repeatSecretPasswordError
-                  ? repeatSecretPasswordErrorMessage
-                  : ""}
+                {errors.repeatSecretPassword}
               </div>
             </FormControl>
             <LoadingButton
