@@ -20,14 +20,16 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
 import { useEncrypt } from "../../utils/hooks/useEncrypt";
+import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 
 interface Props {
   onCancelAdd: () => void;
 }
 
 interface Errors {
-  secretNameError: string;
+  receiverNameError: string;
   emailError: string;
+  secretTitleError: string;
   secretTextError: string;
   secretPasswordError: string;
   repeatSecretPasswordError: string;
@@ -63,15 +65,17 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
 
 const AddSecret: FC<Props> = ({ onCancelAdd }) => {
   const [errors, setErrors] = useState<Errors>({
-    secretNameError: "",
+    receiverNameError: "",
     emailError: "",
+    secretTitleError: "",
     secretTextError: "",
     secretPasswordError: "",
     repeatSecretPasswordError: "",
   });
 
-  const secretNameRef = useRef<HTMLInputElement>(null);
+  const receiverNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const secretTitleRef = useRef<HTMLInputElement>(null);
   const secretTextRef = useRef<HTMLInputElement>(null);
   const secretPasswordRef = useRef<HTMLInputElement>(null);
   const repeatSecretPasswordRef = useRef<HTMLInputElement>(null);
@@ -138,35 +142,43 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
   const handleClickShowRepeatSecretPassword = () =>
     setShowRepeatSecretPassword((show) => !show);
 
+  // валидация полей
   const validateInputs = (): boolean => {
     let isValid = true;
 
-    const secretName = secretNameRef.current?.value || "";
+    const receiverName = receiverNameRef.current?.value || "";
     const email = emailRef.current?.value || "";
+    const secretTitle = secretTitleRef.current?.value || "";
     const secretText = secretTextRef.current?.value || "";
     const secretPassword = secretPasswordRef.current?.value || "";
     const repeatSecretPassword = repeatSecretPasswordRef.current?.value || "";
 
     const newErrors: Errors = {
-      secretNameError: "",
+      receiverNameError: "",
       emailError: "",
+      secretTitleError: "",
       secretTextError: "",
       secretPasswordError: "",
       repeatSecretPasswordError: "",
     };
 
-    if (!secretName) {
-      newErrors.secretNameError = "Введите наименование секрета";
-      isValid = false;
-    }
-
-    if (!secretText) {
-      newErrors.secretTextError = "Введите текст секрета";
+    if (!receiverName) {
+      newErrors.receiverNameError = "Введите имя получателя";
       isValid = false;
     }
 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       newErrors.emailError = "Введите корректный email";
+      isValid = false;
+    }
+
+    if (!secretTitle) {
+      newErrors.secretTitleError = "Введите наименование секрета";
+      isValid = false;
+    }
+
+    if (!secretText) {
+      newErrors.secretTextError = "Введите текст секрета";
       isValid = false;
     }
 
@@ -187,42 +199,55 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     return isValid;
   };
 
-  const handleButtonClick = () => {
-    if (validateInputs()) {
-      // Валидация полей перед генерацией ключа
-      handleGenerateKey(password); // Используйте текущее значение состояния
+  // отправка секрета
+  const handleSecretSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    // const data = new FormData(event.currentTarget);
+    // const email = data.get("email")?.toString().trim() ?? "";
+    // const password = data.get("password")?.toString().trim() ?? "";
+
+    try {
+      // setLoading(true);
+      // const res = await userAuthorization({ email, password });
+      if (ciphertext !== null) {
+        // расхаркодб
+        const res = await secretSendToBackend(
+          "Сергей Хард",
+          "adviser@bk.ru",
+          ciphertext,
+        );
+        console.log("res:", res);
+
+        // if (res.error === "internal_server_error") {
+        //   showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
+        // } else if (res.error === "Unauthorized") {
+        //   showAlert(
+        //     "error",
+        //     "Что-то пошло не так!",
+        //     "Неверные логин или пароль",
+        //   );
+        // } else if (res.access) {
+        //   localStorage.setItem("authToken", res.access);
+        //   navigate("/");
+        // }
+      }
+    } catch (error) {
+      console.error("Ошибка в handleSubmit:", error);
+    } finally {
+      // setLoading(false);
     }
   };
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-
-  //   if (emailError || passwordError) {
-  //     return;
-  //   }
-
-  //   const data = new FormData(event.currentTarget);
-  //   const email = data.get("email")?.toString().trim() ?? "";
-  //   const password = data.get("password")?.toString().trim() ?? "";
-
-  //   try {
-  //     setLoading(true);
-  //     const res = await userAuthorization({ email, password });
-  //     console.log("res:", res);
-  //     if (res.error === "internal_server_error") {
-  //       showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
-  //     } else if (res.error === "Unauthorized") {
-  //       showAlert("error", "Что-то пошло не так!", "Неверные логин или пароль");
-  //     } else if (res.access) {
-  //       localStorage.setItem("authToken", res.access);
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error("Ошибка в handleSubmit:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  // клик по клавише отправить
+  const handleButtonClick = () => {
+    // Валидация полей перед генерацией ключа
+    if (validateInputs()) {
+      handleGenerateKey(password); // Используйте текущее значение состояния
+    }
+  };
 
   return (
     <>
@@ -238,22 +263,36 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
           <Box
             component="form"
-            // onSubmit={handleSubmit}
+            onSubmit={handleSecretSubmit}
             sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="secretName">Название секрета</FormLabel>
+              <FormLabel htmlFor="receiverName">Имя получателя</FormLabel>
               <TextField
                 fullWidth
-                inputRef={secretNameRef}
                 autoFocus
-                id="secretName"
-                name="secretName"
+                inputRef={receiverNameRef}
+                id="receiverName"
+                name="receiverName"
                 variant="outlined"
-                error={!!errors.secretNameError}
+                error={!!errors.receiverNameError}
               />
               <div className={styles.placeForErrMassage}>
-                {errors.secretNameError}
+                {errors.receiverNameError}
+              </div>
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="secretTitle">Название секрета</FormLabel>
+              <TextField
+                fullWidth
+                inputRef={secretTitleRef}
+                id="secretTitle"
+                name="secretTitle"
+                variant="outlined"
+                error={!!errors.secretTitleError}
+              />
+              <div className={styles.placeForErrMassage}>
+                {errors.secretTitleError}
               </div>
             </FormControl>
             <FormControl>
@@ -360,7 +399,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               </div>
             </FormControl>
             <LoadingButton
-              // type="submit"
+              type="submit"
               variant="contained"
               fullWidth
               color="primary"
