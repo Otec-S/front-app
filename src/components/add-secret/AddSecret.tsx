@@ -19,7 +19,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
-// import { useEncrypt } from "../../utils/hooks/useEncrypt";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
 
@@ -86,30 +85,11 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     useState(false);
 
   const [loading, setLoading] = useState(false);
-
-  // TODO:
-  // стейт хранения пароля - нужен вообще?
-  const [password, setPassword] = useState("");
-  // стейт хранения изначального текста
   const [initialText, setInitialText] = useState("");
-  // стейт хранения ключа шифрования
-  const [encryptionKey, setEncryptionKey] = useState("");
-  // console.log("encryptionKey:", encryptionKey);
 
-  // подаем в хук текст и ключ шифрования, получаем зашифрованный текст функцию шифрования
-  // нужен error ?
-  // const { ciphertext, error } = useEncrypt(initialText, encryptionKey);
-
-  // функция генерация ключа шифрования
-  // принимает на вход строку пароля - откуда ее берет?
-  const handleGenerateKey = async (password: string) => {
+  const handleGenerateKeyAndEncryptText = async (password: string) => {
     try {
-      // отправляет ее в функцию генерации ключа
       const key = await generateKeyFromPassword(password);
-      // сохраняет полученный из функции ключ в стейт - потом передается в хук для шифрования
-      setEncryptionKey(key);
-      console.log("Ключ шифрования из пароля:", key);
-
       const { ciphertext, error } = await encryptText(initialText, key);
 
       if (error) {
@@ -193,34 +173,17 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     event.preventDefault();
 
     if (validateInputs()) {
-      const result = await handleGenerateKey(
+      const result = await handleGenerateKeyAndEncryptText(
         secretPasswordRef.current?.value || "",
-      ); // Используем пароль из input'а
-      // await handleGenerateKey(password); // Используем пароль из input'а
+      );
 
       if (!result.success) {
         console.error("Ошибка при генерации ключа шифрования:", result.error);
         return;
       }
 
-      console.log(
-        "encryptionKey после срабатывания await handleGenerateKey(password):",
-        encryptionKey,
-      );
-      console.log("код ДО трай");
-
       try {
         setLoading(true);
-        // const { ciphertext, error } = await encryptText(
-        //   initialText,
-        //   encryptionKey,
-        // );
-
-        // if (error) {
-        //   console.error("Ошибка шифрования:", error);
-        //   return;
-        // }
-
         if (result.ciphertext) {
           const res = await secretSendToBackend(
             receiverNameRef.current?.value || "",
@@ -236,12 +199,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
       }
     }
   };
-
-  // клик по клавише отправить
-  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.preventDefault();
-  //   handleSecretSubmit(); // Вызывем функцию отправки секрета
-  // };
 
   return (
     <>
@@ -313,9 +270,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 name="secretText"
                 variant="outlined"
                 error={!!errors.secretTextError}
-                // helperText={errors.secretText}
                 onChange={(e) => setInitialText(e.target.value)}
-                // sx={{ minHeight: "200px" }}
               />
               <div className={styles.placeForErrMassage}>
                 {errors.secretTextError}
@@ -366,7 +321,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
                 inputRef={repeatSecretPasswordRef}
                 name="repeatSecretPassword"
                 id="repeatSecretPassword"
-                onChange={(e) => setPassword(e.target.value)}
                 type={showRepeatSecretPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
@@ -397,7 +351,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               variant="contained"
               fullWidth
               color="primary"
-              // onClick={handleButtonClick}
               loading={loading}
             >
               Добавить секрет

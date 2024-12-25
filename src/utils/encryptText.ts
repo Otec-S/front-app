@@ -48,6 +48,3 @@ export const encryptText = async (
     }
   }
 };
-
-// Пример использования
-// const { ciphertext, iv, error } = await encrypt("ваш-текст", "ваш-ключ-шифрования");
