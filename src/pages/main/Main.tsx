@@ -145,8 +145,8 @@ const Main: FC = () => {
       </Dialog>
       <Modal
         open={openAddSecretModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        // aria-labelledby="modal-modal-title"
+        // aria-describedby="modal-modal-description"
         sx={{ bordeRadius: "5px" }}
       >
         <AddSecret onCancelAdd={handleCloseAddSecretModal} />

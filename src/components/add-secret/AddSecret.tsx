@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 
 import styles from "./AddSecret.module.css";
 import {
@@ -19,8 +19,9 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
-import { useEncrypt } from "../../utils/hooks/useEncrypt";
+// import { useEncrypt } from "../../utils/hooks/useEncrypt";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
+import { encryptText } from "../../utils/encryptText";
 
 interface Props {
   onCancelAdd: () => void;
@@ -84,58 +85,44 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
   const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
     useState(false);
 
-  // TODO:
-  const [password, setPassword] = useState("");
-  const [initialText, setInitialText] = useState("");
-  console.log("initialText:", initialText);
-  const [encryptionKey, setEncryptionKey] = useState("");
-  // TODO: выведи в подсказку пользователю, еси ошибка эта
-  const [encryptionKeyError, setEncryptionKeyError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // TODO:
+  // стейт хранения пароля - нужен вообще?
+  const [password, setPassword] = useState("");
+  // стейт хранения изначального текста
+  const [initialText, setInitialText] = useState("");
+  // стейт хранения ключа шифрования
+  const [encryptionKey, setEncryptionKey] = useState("");
+  // console.log("encryptionKey:", encryptionKey);
+
+  // подаем в хук текст и ключ шифрования, получаем зашифрованный текст функцию шифрования
+  // нужен error ?
+  // const { ciphertext, error } = useEncrypt(initialText, encryptionKey);
+
+  // функция генерация ключа шифрования
+  // принимает на вход строку пароля - откуда ее берет?
   const handleGenerateKey = async (password: string) => {
     try {
+      // отправляет ее в функцию генерации ключа
       const key = await generateKeyFromPassword(password);
+      // сохраняет полученный из функции ключ в стейт - потом передается в хук для шифрования
       setEncryptionKey(key);
       console.log("Ключ шифрования из пароля:", key);
+
+      const { ciphertext, error } = await encryptText(initialText, key);
+
+      if (error) {
+        console.error("Ошибка шифрования:", error);
+        return { success: false, error };
+      }
+
+      return { success: true, ciphertext };
     } catch (error) {
-      setEncryptionKeyError("Ошибка генерации ключа");
       console.log("Error generating key:", error);
+      return { success: false, error };
     }
   };
-
-  const {
-    encryptData,
-    ciphertext,
-    iv,
-    error: encryptError,
-  } = useEncrypt(initialText, encryptionKey);
-
-  // Шифрование при изменении encryptionKey
-  // useEffect(() => {
-  //   if (encryptionKey) {
-  //     encryptData();
-  //     console.log("ciphertext:", ciphertext);
-  //   }
-  // }, [encryptionKey]);
-
-  useEffect(() => {
-    const processEncryption = async () => {
-      if (encryptionKey && initialText) {
-        try {
-          // Ждем завершения шифрования
-          await encryptData(); // Предполагается, что encryptData возвращает промис
-
-          // Теперь можно безопасно использовать ciphertext
-          console.log("ciphertext:", ciphertext);
-          // await sendEncryptedData(ciphertext); // Отправка зашифрованного текста на сервер
-        } catch (error) {
-          console.error("Ошибка при шифровании или отправке данных:", error);
-        }
-      }
-    };
-
-    processEncryption(); // Вызов функции
-  }, [encryptionKey, initialText]);
 
   const handleClickShowSecretPassword = () =>
     setShowSecretPassword((show) => !show);
@@ -201,53 +188,60 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
   // отправка секрета
   const handleSecretSubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
+    event: React.MouseEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
 
-    // const data = new FormData(event.currentTarget);
-    // const email = data.get("email")?.toString().trim() ?? "";
-    // const password = data.get("password")?.toString().trim() ?? "";
+    if (validateInputs()) {
+      const result = await handleGenerateKey(
+        secretPasswordRef.current?.value || "",
+      ); // Используем пароль из input'а
+      // await handleGenerateKey(password); // Используем пароль из input'а
 
-    try {
-      // setLoading(true);
-      // const res = await userAuthorization({ email, password });
-      if (ciphertext !== null) {
-        // расхаркодб
-        const res = await secretSendToBackend(
-          "Сергей Хард",
-          "adviser@bk.ru",
-          ciphertext,
-        );
-        console.log("res:", res);
-
-        // if (res.error === "internal_server_error") {
-        //   showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
-        // } else if (res.error === "Unauthorized") {
-        //   showAlert(
-        //     "error",
-        //     "Что-то пошло не так!",
-        //     "Неверные логин или пароль",
-        //   );
-        // } else if (res.access) {
-        //   localStorage.setItem("authToken", res.access);
-        //   navigate("/");
-        // }
+      if (!result.success) {
+        console.error("Ошибка при генерации ключа шифрования:", result.error);
+        return;
       }
-    } catch (error) {
-      console.error("Ошибка в handleSubmit:", error);
-    } finally {
-      // setLoading(false);
+
+      console.log(
+        "encryptionKey после срабатывания await handleGenerateKey(password):",
+        encryptionKey,
+      );
+      console.log("код ДО трай");
+
+      try {
+        setLoading(true);
+        // const { ciphertext, error } = await encryptText(
+        //   initialText,
+        //   encryptionKey,
+        // );
+
+        // if (error) {
+        //   console.error("Ошибка шифрования:", error);
+        //   return;
+        // }
+
+        if (result.ciphertext) {
+          const res = await secretSendToBackend(
+            receiverNameRef.current?.value || "",
+            emailRef.current?.value || "",
+            result.ciphertext,
+          );
+          console.log("Oтвет сервера на секрет:", res);
+        }
+      } catch (error) {
+        console.error("Ошибка при шифровании или отправке данных:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   // клик по клавише отправить
-  const handleButtonClick = () => {
-    // Валидация полей перед генерацией ключа
-    if (validateInputs()) {
-      handleGenerateKey(password); // Используйте текущее значение состояния
-    }
-  };
+  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   handleSecretSubmit(); // Вызывем функцию отправки секрета
+  // };
 
   return (
     <>
@@ -403,8 +397,8 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               variant="contained"
               fullWidth
               color="primary"
-              onClick={handleButtonClick}
-              // loading={loading}
+              // onClick={handleButtonClick}
+              loading={loading}
             >
               Добавить секрет
             </LoadingButton>
@@ -417,4 +411,5 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
     </>
   );
 };
+
 export default AddSecret;
