@@ -19,6 +19,7 @@ import { FC, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
 import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import { ServerResponseToAddSecret } from "../../utils/types-from-backend";
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -35,6 +36,11 @@ const rows = [
 ];
 
 const Main: FC = () => {
+  // const [serverResponseToAddSecret, setServerResponseToAddSecret] =
+  //   useState<ServerResponseToAddSecret | null>(null);
+
+  // console.log("serverResponseToAddSecret:", serverResponseToAddSecret);
+
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
   const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
   const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
@@ -58,6 +64,13 @@ const Main: FC = () => {
   };
 
   const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
+
+  // TODO: вставляй в табличку
+  // const handleServerResponseToAddSecret = (
+  //   responseData: ServerResponseToAddSecret,
+  // ) => {
+  //   setServerResponseToAddSecret(responseData);
+  // };
 
   return (
     <>
@@ -87,9 +100,9 @@ const Main: FC = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Дата</TableCell>
                 <TableCell>Секрет</TableCell>
                 <TableCell>Получатель</TableCell>
+                <TableCell>Email получателя</TableCell>
                 <TableCell>Удаление</TableCell>
               </TableRow>
             </TableHead>

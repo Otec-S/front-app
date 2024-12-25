@@ -24,9 +24,11 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
+// import { ServerResponseToAddSecret } from "../../utils/types-from-backend";
 
 interface Props {
   onCancelAdd: () => void;
+  // onResponse: (responseData: ServerResponseToAddSecret) => void;
 }
 
 interface Errors {
@@ -66,7 +68,10 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-const AddSecret: FC<Props> = ({ onCancelAdd }) => {
+const AddSecret: FC<Props> = ({
+  onCancelAdd,
+  // onResponse
+}) => {
   const [openAlertModal, setOpenAlertModal] = useState(false);
   const [alertText, setAlertText] = useState<string | JSX.Element>("");
   const [alertTitle, setAlertTitle] = useState("");
@@ -223,10 +228,19 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
               res.data.non_field_errors.toString(),
             );
           } else {
+            // const responseData: ServerResponseToAddSecret = {
+            //   external_id: res.external_id,
+            //   recipient: {
+            //     email: res.recipient.email,
+            //     name: res.recipient.name,
+            //   },
+            //   filename: res.filename,
+            // };
+            // onResponse(responseData);
             showAlertModal(
               "success",
               "Секрет отправлен",
-              "Секрет успешно отправлен",
+              `Секрет ${res.filename} для ${res.recipient.name} успешно отправлен`,
             );
             setTimeout(() => {
               onCancelAdd();
