@@ -209,6 +209,7 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
         setLoading(true);
         if (result.ciphertext) {
           const res = await secretSendToBackend(
+            secretTitleRef.current?.value || "",
             receiverNameRef.current?.value || "",
             emailRef.current?.value || "",
             result.ciphertext,

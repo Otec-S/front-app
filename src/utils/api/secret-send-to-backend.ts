@@ -1,6 +1,7 @@
 import { BASE_URL } from "../constants";
 
 export const secretSendToBackend = async (
+  secretTitle: string,
   receiverName: string,
   receiverEmail: string,
   encryptedText: string,
@@ -9,7 +10,7 @@ export const secretSendToBackend = async (
   const blob = new Blob([encryptedText], { type: "text/plain" });
 
   // Если необходимо, можно создать объект File, указав имя файла
-  const file = new File([blob], "secretfile.txt", { type: "text/plain" });
+  const file = new File([blob], secretTitle, { type: "text/plain" });
 
   // Создаем объект FormData
   const formData = new FormData();
