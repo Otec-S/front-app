@@ -10,9 +10,12 @@ import { FC, useRef, useState } from "react";
 
 import styles from "./AddSecret.module.css";
 import {
+  Alert,
+  AlertTitle,
   Button,
   IconButton,
   InputAdornment,
+  Modal,
   OutlinedInput,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -64,6 +67,26 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const AddSecret: FC<Props> = ({ onCancelAdd }) => {
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [alertText, setAlertText] = useState<string | JSX.Element>("");
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertStatus, setAlertStatus] = useState<
+    "success" | "error" | "warning" | "info"
+  >("success");
+
+  const handleAlertModalOpen = () => setOpenAlertModal(true);
+  const handleAlertModalClose = () => setOpenAlertModal(false);
+  const showAlertModal = (
+    status: "success" | "error" | "warning" | "info",
+    title: string,
+    text: string | JSX.Element,
+  ) => {
+    handleAlertModalOpen();
+    setAlertStatus(status);
+    setAlertTitle(title);
+    setAlertText(text);
+  };
+
   const [errors, setErrors] = useState<Errors>({
     receiverNameError: "",
     emailError: "",
@@ -191,6 +214,23 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
             result.ciphertext,
           );
           console.log("Oтвет сервера на секрет:", res);
+
+          if (res.error) {
+            showAlertModal(
+              "error",
+              "Секрет не отправлен",
+              res.data.non_field_errors.toString(),
+            );
+          } else {
+            showAlertModal(
+              "success",
+              "Секрет отправлен",
+              "Секрет успешно отправлен",
+            );
+            setTimeout(() => {
+              onCancelAdd();
+            }, 3000);
+          }
         }
       } catch (error) {
         console.error("Ошибка при шифровании или отправке данных:", error);
@@ -202,6 +242,19 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
 
   return (
     <>
+      <Modal
+        open={openAlertModal}
+        onClose={handleAlertModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className={styles.alertModal}>
+          <Alert severity={alertStatus} sx={{ borderRadius: "5px" }}>
+            <AlertTitle>{alertTitle}</AlertTitle>
+            {alertText}
+          </Alert>
+        </Box>
+      </Modal>
       <AddSecretContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
