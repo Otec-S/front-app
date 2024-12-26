@@ -222,14 +222,14 @@ const AddSecret: FC<Props> = ({
           if (res.error) {
             showAlertModal(
               "error",
-              "Секрет не отправлен",
+              "Секрет не добавлен",
               res.data.non_field_errors.toString(),
             );
           } else {
             showAlertModal(
               "success",
               "Секрет отправлен",
-              `Секрет ${res.filename} для ${res.recipient.name} успешно отправлен`,
+              `Секрет ${res.filename} для ${res.recipient.name} успешно добавлен`,
             );
             setTimeout(() => {
               onCancelAdd();

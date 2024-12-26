@@ -29,6 +29,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { userAuthorization } from "../../utils/api/user-authorization";
 
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../utils/constants";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -150,7 +151,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         showAlert("error", "Что-то пошло не так!", "Неверные логин или пароль");
       } else if (res.access) {
         sessionStorage.setItem("authToken", res.access);
-        navigate("/");
+        navigate(ROUTES.HOME);
       }
     } catch (error) {
       console.error("Ошибка в handleSubmit:", error);

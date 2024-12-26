@@ -28,6 +28,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { userRegistration } from "../../utils/api/user-registration";
+import { ROUTES } from "../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -84,6 +86,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     "success" | "error" | "warning" | "info"
   >("success");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -144,11 +147,10 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       if (res.error === "internal_server_error") {
         showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
       } else if (res.id) {
-        showAlert(
-          "success",
-          "Регистрация прошла успешно!",
-          "Для активации аккаунта перейдите по ссылке в письме",
-        );
+        showAlert("success", "Регистрация прошла успешно!", "");
+        setTimeout(() => {
+          navigate(ROUTES.SIGN_IN);
+        }, 3000);
       } else if (res.data.email) {
         showAlert("warning", "Ошибка в email:", res.data.email.toString());
       } else if (res.data.password) {
