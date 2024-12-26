@@ -15,11 +15,24 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
 import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-// import { ServerResponseToAddSecret } from "../../utils/types-from-backend";
+import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
+
+// TODO: вынеси в папку типов
+interface AllSecretsFromBackend {
+  external_id: string;
+  content: string;
+  filename: string;
+  recipient: {
+    name: string;
+    email: string;
+  };
+  download_url: string;
+  created_at: Date;
+}
 
 function createData(date: string, name: string, receiver: string) {
   return { date, name, receiver };
@@ -36,10 +49,13 @@ const rows = [
 ];
 
 const Main: FC = () => {
-  // const [serverResponseToAddSecret, setServerResponseToAddSecret] =
-  //   useState<ServerResponseToAddSecret | null>(null);
+  const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
+    AllSecretsFromBackend[] | null
+  >(null);
+  console.log("allSecretsFromBackend:", allSecretsFromBackend);
 
-  // console.log("serverResponseToAddSecret:", serverResponseToAddSecret);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
   const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
@@ -65,12 +81,33 @@ const Main: FC = () => {
 
   const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
 
-  // TODO: вставляй в табличку
-  // const handleServerResponseToAddSecret = (
-  //   responseData: ServerResponseToAddSecret,
-  // ) => {
-  //   setServerResponseToAddSecret(responseData);
-  // };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true); // Начало загрузки
+      try {
+        const result = await SecretsGetFromBackend();
+        setAllSecretsFromBackend(result);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err); // Устанавливаем ошибку, если она есть
+        } else {
+          setError(new Error("Unknown error")); // Обработка неизвестных ошибок
+        }
+      } finally {
+        setLoading(false); // Завершение загрузки
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <>
@@ -100,6 +137,7 @@ const Main: FC = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TableCell>Дата</TableCell>
                 <TableCell>Секрет</TableCell>
                 <TableCell>Получатель</TableCell>
                 <TableCell>Email получателя</TableCell>
