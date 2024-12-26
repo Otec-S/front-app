@@ -20,33 +20,7 @@ import AddSecret from "../../components/add-secret/AddSecret";
 import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
-
-// TODO: вынеси в папку типов
-interface AllSecretsFromBackend {
-  external_id: string;
-  content: string;
-  filename: string;
-  recipient: {
-    name: string;
-    email: string;
-  };
-  download_url: string;
-  created_at: Date;
-}
-
-function createData(date: string, name: string, receiver: string) {
-  return { date, name, receiver };
-}
-
-const rows = [
-  createData("12.12.2024", "Фотоархив", "sergey.adviser@gmail.com"),
-  createData("11.12.2024", "Документы", "test@test.test"),
-  createData("10.12.2024", "Контракты", "example@example.com"),
-  createData("09.12.2024", "Записи", "info@domain.com"),
-  createData("08.12.2024", "Отчеты", "user@provider.net"),
-  createData("07.12.2024", "Презентации", "contact@service.org"),
-  createData("06.12.2024", "Бюллетени", "admin@website.co"),
-];
+import { AllSecretsFromBackend } from "../../utils/types-from-backend";
 
 const Main: FC = () => {
   const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
@@ -63,6 +37,22 @@ const Main: FC = () => {
 
   const [secretTitle, setSecretTitle] = useState("");
 
+  const fetchDataFromBackend = async () => {
+    setLoading(true);
+    try {
+      const result = await SecretsGetFromBackend();
+      setAllSecretsFromBackend(result);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      } else {
+        setError(new Error("Unknown error"));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleClickOpenRemoveConfirm = () => {
     setOpenRemoveConfirm(true);
   };
@@ -72,7 +62,10 @@ const Main: FC = () => {
   };
 
   const handleClickAddSecretModal = () => setOpenAddSecretModal(true);
-  const handleCloseAddSecretModal = () => setOpenAddSecretModal(false);
+  const handleCloseAddSecretModal = () => {
+    fetchDataFromBackend();
+    setOpenAddSecretModal(false);
+  };
 
   const handleClickGetSecretModal = (title: string) => {
     setSecretTitle(title);
@@ -82,23 +75,7 @@ const Main: FC = () => {
   const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true); // Начало загрузки
-      try {
-        const result = await SecretsGetFromBackend();
-        setAllSecretsFromBackend(result);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err); // Устанавливаем ошибку, если она есть
-        } else {
-          setError(new Error("Unknown error")); // Обработка неизвестных ошибок
-        }
-      } finally {
-        setLoading(false); // Завершение загрузки
-      }
-    };
-
-    fetchData();
+    fetchDataFromBackend();
   }, []);
 
   if (loading) {
@@ -145,20 +122,23 @@ const Main: FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {allSecretsFromBackend?.map((secret) => (
                 <TableRow
-                  key={row.name}
+                  key={secret.external_id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.date}
+                    {new Date(secret.created_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleClickGetSecretModal(row.name)}>
-                      {row.name}
+                    <Button
+                      onClick={() => handleClickGetSecretModal(secret.filename)}
+                    >
+                      {secret.filename}
                     </Button>
                   </TableCell>
-                  <TableCell>{row.receiver}</TableCell>
+                  <TableCell>{secret.recipient.name}</TableCell>
+                  <TableCell>{secret.recipient.email}</TableCell>
                   <TableCell>
                     <Button
                       variant="text"
@@ -196,8 +176,8 @@ const Main: FC = () => {
       </Dialog>
       <Modal
         open={openAddSecretModal}
-        // aria-labelledby="modal-modal-title"
-        // aria-describedby="modal-modal-description"
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
         sx={{ bordeRadius: "5px" }}
       >
         <AddSecret onCancelAdd={handleCloseAddSecretModal} />
