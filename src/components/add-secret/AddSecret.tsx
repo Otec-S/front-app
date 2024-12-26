@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { FC, useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 
 import styles from "./AddSecret.module.css";
 import {
@@ -69,7 +69,7 @@ const AddSecretContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-const AddSecret: FC<Props> = ({ onCancelAdd }) => {
+const AddSecret = forwardRef<HTMLDivElement, Props>(({ onCancelAdd }, ref) => {
   const [openAlertModal, setOpenAlertModal] = useState(false);
   const [alertText, setAlertText] = useState<string | JSX.Element | null>("");
   const [alertTitle, setAlertTitle] = useState("");
@@ -259,7 +259,11 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
           </Alert>
         </Box>
       </Modal>
-      <AddSecretContainer direction="column" justifyContent="space-between">
+      <AddSecretContainer
+        ref={ref}
+        direction="column"
+        justifyContent="space-between"
+      >
         <Card variant="outlined">
           <Typography
             component="h1"
@@ -420,6 +424,6 @@ const AddSecret: FC<Props> = ({ onCancelAdd }) => {
       </AddSecretContainer>
     </>
   );
-};
+});
 
 export default AddSecret;
