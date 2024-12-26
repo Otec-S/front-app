@@ -28,7 +28,6 @@ const Main: FC = () => {
   const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
     AllSecretsFromBackend[] | null
   >(null);
-  console.log("allSecretsFromBackend:", allSecretsFromBackend);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);

@@ -144,17 +144,14 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
       if (res.error === "internal_server_error") {
         showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
       } else if (res.id) {
-        console.log("Регистрация прошла успешно");
         showAlert(
           "success",
           "Регистрация прошла успешно!",
           "Для активации аккаунта перейдите по ссылке в письме",
         );
       } else if (res.data.email) {
-        console.log("Ошибка в email:", res.data.email.toString());
         showAlert("warning", "Ошибка в email:", res.data.email.toString());
       } else if (res.data.password) {
-        console.log("Ошибка в password:", res.data.password);
         showAlert(
           "warning",
           "Ошибка в password:",

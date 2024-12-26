@@ -24,11 +24,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
-// import { ServerResponseToAddSecret } from "../../utils/types-from-backend";
 
 interface Props {
   onCancelAdd: () => void;
-  // onResponse: (responseData: ServerResponseToAddSecret) => void;
 }
 
 interface Errors {
@@ -127,7 +125,7 @@ const AddSecret: FC<Props> = ({
 
       return { success: true, ciphertext };
     } catch (error) {
-      console.log("Error generating key:", error);
+      console.error("Error generating key:", error);
       return { success: false, error };
     }
   };
@@ -219,7 +217,7 @@ const AddSecret: FC<Props> = ({
             emailRef.current?.value || "",
             result.ciphertext,
           );
-          console.log("Oтвет сервера на секрет:", res);
+          console.info("Oтвет сервера на секрет:", res);
 
           if (res.error) {
             showAlertModal(
@@ -228,15 +226,6 @@ const AddSecret: FC<Props> = ({
               res.data.non_field_errors.toString(),
             );
           } else {
-            // const responseData: ServerResponseToAddSecret = {
-            //   external_id: res.external_id,
-            //   recipient: {
-            //     email: res.recipient.email,
-            //     name: res.recipient.name,
-            //   },
-            //   filename: res.filename,
-            // };
-            // onResponse(responseData);
             showAlertModal(
               "success",
               "Секрет отправлен",

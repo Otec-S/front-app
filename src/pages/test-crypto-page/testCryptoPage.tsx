@@ -11,10 +11,9 @@ const TestCryptoPage: FC = () => {
     try {
       const key = await generateKeyFromPassword(password);
       setEncryptionKey(key);
-      console.log("Generated Key from Password:", key);
     } catch (error) {
       setError("Ошибка генерации ключа");
-      console.log("Error generating key:", error);
+      console.error("Error  key:", error);
     }
   };
 

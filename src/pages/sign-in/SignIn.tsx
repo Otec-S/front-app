@@ -144,7 +144,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     try {
       setLoading(true);
       const res = await userAuthorization({ email, password });
-      console.log("res:", res);
       if (res.error === "internal_server_error") {
         showAlert("error", "Что-то пошло не так!", "Ошибка сервера");
       } else if (res.error === "Unauthorized") {
