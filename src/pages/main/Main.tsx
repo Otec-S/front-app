@@ -24,18 +24,38 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
 import { secretDelete } from "../../utils/api/secret-delete";
+import { Alert, AlertTitle } from "@mui/material";
+import styles from "./Main.module.css";
 
 const Main: FC = () => {
+  const [alertText, setAlertText] = useState<string | JSX.Element>("");
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertStatus, setAlertStatus] = useState<
+    "success" | "error" | "warning" | "info"
+  >("success");
+
+  const showAlert = (
+    status: "success" | "error" | "warning" | "info",
+    title: string,
+    text: string | JSX.Element,
+  ) => {
+    handleOpen();
+    setAlertStatus(status);
+    setAlertTitle(title);
+    setAlertText(text);
+  };
+
   const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
     AllSecretsFromBackend[] | null
   >(null);
 
   console.log(allSecretsFromBackend);
 
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
-  // стейт для храннения external_id секрета, который нужно удалить
   const [externalIdForDeletion, setExternalIdForDeletion] = useState<
     string | null
   >(null);
@@ -44,6 +64,10 @@ const Main: FC = () => {
   const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
 
   const [secretTitle, setSecretTitle] = useState("");
+
+  const handleOpen = () => {
+    setOpenAlertModal(true);
+  };
 
   const fetchDataFromBackend = async () => {
     setLoading(true);
@@ -61,21 +85,26 @@ const Main: FC = () => {
     }
   };
 
-  // удаление секрета
   const handleDeleteSecret = async () => {
     if (!externalIdForDeletion) return;
 
     try {
       setLoading(true);
-      await secretDelete(externalIdForDeletion);
-      setAllSecretsFromBackend((prev) =>
-        prev
-          ? prev.filter(
-              (secret) => secret.external_id !== externalIdForDeletion,
-            )
-          : null,
-      );
+      const result = (await secretDelete(externalIdForDeletion)) as Response;
+      if (result.status === 204) {
+        setAllSecretsFromBackend((prev) =>
+          prev
+            ? prev.filter(
+                (secret) => secret.external_id !== externalIdForDeletion,
+              )
+            : null,
+        );
+      } else {
+        showAlert("error", "Что-то пошло не так!", "Ошибка удаления секрета.");
+        return;
+      }
     } catch (err) {
+      showAlert("error", "Что-то пошло не так!", "Ошибка удаления секрета.");
       setError(
         err instanceof Error ? err : new Error("Failed to delete secret."),
       );
@@ -90,7 +119,6 @@ const Main: FC = () => {
     setOpenRemoveConfirm(true);
   };
 
-  // подтверждение удаления секрета
   const handleCloseRemoveConfirm = () => {
     setOpenRemoveConfirm(false);
     setExternalIdForDeletion(null);
@@ -128,11 +156,25 @@ const Main: FC = () => {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    showAlert("error", "Что-то пошло не так!", `${error?.message}`);
+    return;
   }
 
   return (
     <>
+      <Modal
+        open={openAlertModal}
+        onClose={() => setOpenAlertModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className={styles.modal}>
+          <Alert severity={alertStatus} sx={{ borderRadius: "5px" }}>
+            <AlertTitle>{alertTitle}</AlertTitle>
+            {alertText}
+          </Alert>
+        </Box>
+      </Modal>
       <Box
         sx={{
           display: "flex",

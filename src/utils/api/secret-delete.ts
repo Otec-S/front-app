@@ -10,7 +10,7 @@ export const secretDelete = async (external_id: string) => {
     },
   })
     .then((res) => {
-      return res.json();
+      return res;
     })
     .catch((error) => {
       console.error(error);
