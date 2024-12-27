@@ -20,7 +20,6 @@ export const secretSendToBackend = async (
   formData.append("recipient.email", receiverEmail);
   formData.append("content", file);
 
-  // Извлекаем токен из sessionStorage
   const token = sessionStorage.getItem("authToken");
 
   return await fetch(`${BASE_URL}/boxes/`, {

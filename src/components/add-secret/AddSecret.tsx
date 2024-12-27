@@ -228,7 +228,7 @@ const AddSecret = forwardRef<HTMLDivElement, Props>(({ onCancelAdd }, ref) => {
           } else {
             showAlertModal(
               "success",
-              "Секрет отправлен",
+              "Секрет добавлен",
               `Секрет ${res.filename} для ${res.recipient.name} успешно добавлен`,
             );
             setTimeout(() => {

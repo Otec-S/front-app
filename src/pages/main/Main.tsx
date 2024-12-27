@@ -23,6 +23,7 @@ import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
+import { secretDelete } from "../../utils/api/secret-delete";
 
 const Main: FC = () => {
   const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
@@ -33,8 +34,12 @@ const Main: FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-
   const [openRemoveConfirm, setOpenRemoveConfirm] = useState(false);
+  // стейт для храннения external_id секрета, который нужно удалить
+  const [externalIdForDeletion, setExternalIdForDeletion] = useState<
+    string | null
+  >(null);
+
   const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
   const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
 
@@ -56,12 +61,39 @@ const Main: FC = () => {
     }
   };
 
-  const handleClickOpenRemoveConfirm = () => {
+  // удаление секрета
+  const handleDeleteSecret = async () => {
+    if (!externalIdForDeletion) return;
+
+    try {
+      setLoading(true);
+      await secretDelete(externalIdForDeletion);
+      setAllSecretsFromBackend((prev) =>
+        prev
+          ? prev.filter(
+              (secret) => secret.external_id !== externalIdForDeletion,
+            )
+          : null,
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to delete secret."),
+      );
+    } finally {
+      setLoading(false);
+      setOpenRemoveConfirm(false);
+    }
+  };
+
+  const handleClickOpenRemoveConfirm = (external_id: string) => {
+    setExternalIdForDeletion(external_id);
     setOpenRemoveConfirm(true);
   };
 
+  // подтверждение удаления секрета
   const handleCloseRemoveConfirm = () => {
     setOpenRemoveConfirm(false);
+    setExternalIdForDeletion(null);
   };
 
   const handleClickAddSecretModal = () => setOpenAddSecretModal(true);
@@ -155,7 +187,9 @@ const Main: FC = () => {
                   <TableCell>
                     <Button
                       variant="text"
-                      onClick={handleClickOpenRemoveConfirm}
+                      onClick={() =>
+                        handleClickOpenRemoveConfirm(secret.external_id)
+                      }
                     >
                       <DeleteForeverIcon />
                     </Button>
@@ -184,7 +218,7 @@ const Main: FC = () => {
           <Button onClick={handleCloseRemoveConfirm} autoFocus>
             Отменить
           </Button>
-          <Button onClick={handleCloseRemoveConfirm}>Удалить</Button>
+          <Button onClick={handleDeleteSecret}>Удалить</Button>
         </DialogActions>
       </Dialog>
       <Modal
