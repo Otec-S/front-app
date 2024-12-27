@@ -19,13 +19,14 @@ import {
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import AddSecret from "../../components/add-secret/AddSecret";
-import GetSecret from "../../components/get-secret/GetSecret";
+// import GetSecret from "../../components/get-secret/GetSecret";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
 import { secretDelete } from "../../utils/api/secret-delete";
 import { Alert, AlertTitle } from "@mui/material";
 import styles from "./MainPage.module.css";
+import ShowSecret from "../../components/show-secret/ShowSecret";
 
 const MainPage: FC = () => {
   const [alertText, setAlertText] = useState<string | JSX.Element>("");
@@ -49,6 +50,8 @@ const MainPage: FC = () => {
     AllSecretsFromBackend[] | null
   >(null);
 
+  console.info("Cекреты с сервера:", allSecretsFromBackend);
+
   const [openAlertModal, setOpenAlertModal] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,9 +60,13 @@ const MainPage: FC = () => {
   const [externalIdForDeletion, setExternalIdForDeletion] = useState<
     string | null
   >(null);
+  const [externalIdForShowing, setExternalIdForShowing] = useState<
+    string | null
+  >(null);
 
   const [openAddSecretModal, setOpenAddSecretModal] = useState(false);
-  const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
+  // const [openGetSecretModal, setOpenGetSecretModal] = useState(false);
+  const [openShowSecretModal, setOpenShowSecretModal] = useState(false);
 
   const [secretTitle, setSecretTitle] = useState("");
 
@@ -128,12 +135,18 @@ const MainPage: FC = () => {
     setOpenAddSecretModal(false);
   };
 
-  const handleClickGetSecretModal = (title: string) => {
+  // const handleClickGetSecretModal = (title: string) => {
+  //   setSecretTitle(title);
+  //   setOpenGetSecretModal(true);
+  // };
+
+  const handleClickShowSecretModal = (title: string) => {
     setSecretTitle(title);
-    setOpenGetSecretModal(true);
+    setOpenShowSecretModal(true);
   };
 
-  const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
+  // const handleCloseGetSecretModal = () => setOpenGetSecretModal(false);
+  const handleCloseShowSecretModal = () => setOpenShowSecretModal(false);
 
   useEffect(() => {
     fetchDataFromBackend();
@@ -217,7 +230,10 @@ const MainPage: FC = () => {
                   </TableCell>
                   <TableCell>
                     <Button
-                      onClick={() => handleClickGetSecretModal(secret.filename)}
+                      onClick={() => {
+                        handleClickShowSecretModal(secret.filename);
+                        setExternalIdForShowing(secret.external_id);
+                      }}
                     >
                       {secret.filename}
                     </Button>
@@ -270,14 +286,19 @@ const MainPage: FC = () => {
         <AddSecret onCancelAdd={handleCloseAddSecretModal} />
       </Modal>
       <Modal
-        open={openGetSecretModal}
+        open={openShowSecretModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ bordeRadius: "5px" }}
       >
-        <GetSecret
+        {/* <GetSecret
           onCancelGet={handleCloseGetSecretModal}
           secretName={secretTitle}
+        /> */}
+        <ShowSecret
+          onCancelShow={handleCloseShowSecretModal}
+          secretName={secretTitle}
+          external_id={externalIdForShowing}
         />
       </Modal>
     </>
