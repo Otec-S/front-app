@@ -25,9 +25,9 @@ import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend"
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
 import { secretDelete } from "../../utils/api/secret-delete";
 import { Alert, AlertTitle } from "@mui/material";
-import styles from "./Main.module.css";
+import styles from "./MainPage.module.css";
 
-const Main: FC = () => {
+const MainPage: FC = () => {
   const [alertText, setAlertText] = useState<string | JSX.Element>("");
   const [alertTitle, setAlertTitle] = useState("");
   const [alertStatus, setAlertStatus] = useState<
@@ -48,8 +48,6 @@ const Main: FC = () => {
   const [allSecretsFromBackend, setAllSecretsFromBackend] = useState<
     AllSecretsFromBackend[] | null
   >(null);
-
-  console.log(allSecretsFromBackend);
 
   const [openAlertModal, setOpenAlertModal] = useState(false);
 
@@ -286,4 +284,4 @@ const Main: FC = () => {
   );
 };
 
-export default Main;
+export default MainPage;

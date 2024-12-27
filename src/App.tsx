@@ -2,7 +2,7 @@ import SignIn from "./pages/sign-in/SignIn";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "./utils/constants";
 import SignUp from "./pages/sign-up/SignUp";
-import Main from "./pages/main/Main";
+import MainPage from "./pages/main-page/MainPage";
 import ProtectedRoute from "./components/protected-rout/ProtectedRoute";
 import { CssBaseline } from "@mui/material";
 import "./utils/fonts";
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
     path: ROUTES.HOME,
     element: (
       <ProtectedRoute>
-        <Main />
+        <MainPage />
       </ProtectedRoute>
     ),
   },

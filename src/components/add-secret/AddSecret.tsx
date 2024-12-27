@@ -217,7 +217,6 @@ const AddSecret = forwardRef<HTMLDivElement, Props>(({ onCancelAdd }, ref) => {
             emailRef.current?.value || "",
             result.ciphertext,
           );
-          console.info("Oтвет сервера на секрет:", res);
 
           if (res.error) {
             showAlertModal(
