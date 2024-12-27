@@ -29,6 +29,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
   [theme.breakpoints.up("sm")]: {
     width: "450px",
+    overflowY: "auto",
   },
   ...theme.applyStyles("dark", {
     boxShadow:
@@ -66,7 +67,9 @@ const ShowSecret = forwardRef<HTMLDivElement, Props>(
           ) as HTMLInputElement | null;
 
           if (input) {
-            input.value = data ?? "Ошибка: секрет не найден";
+            input.value = data
+              ? data.substring(0, 300) + "..."
+              : "Ошибка: секрет не найден";
           }
         } catch (error) {
           console.error("Ошибка:", error);
@@ -99,7 +102,7 @@ const ShowSecret = forwardRef<HTMLDivElement, Props>(
               sx={{ display: "flex", flexDirection: "column", gap: 2 }}
             >
               <FormLabel htmlFor="showSecret" style={{ marginBottom: "-9px" }}>
-                Вот так хранится ваш секрет на сервере
+                В таком виде хранится ваш секрет на сервере
               </FormLabel>
               <FormControl>
                 <OutlinedInput
