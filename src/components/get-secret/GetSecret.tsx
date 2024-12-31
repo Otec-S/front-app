@@ -1,14 +1,5 @@
-import Box from "@mui/material/Box";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-// import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
-import { forwardRef, useState } from "react";
-
-import styles from "./GetSecret.module.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Button,
   // Alert,
@@ -18,9 +9,17 @@ import {
   // Modal,
   OutlinedInput,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Box from "@mui/material/Box";
+import MuiCard from "@mui/material/Card";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+// import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import { forwardRef, useState } from "react";
 
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import styles from "./GetSecret.module.css";
 
 interface Props {
   secretName: string;
@@ -98,7 +97,7 @@ const GetSecret = forwardRef<HTMLDivElement, Props>(
     // const [showRepeatSecretPassword, setShowRepeatSecretPassword] =
     useState(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     // const [secretFile, setSecretFile] = useState<File | null>(null);
     // const [alertText, setAlertText] = useState("");
     // const [alertTitle, setAlertTitle] = useState("");

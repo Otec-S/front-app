@@ -1,15 +1,16 @@
+import { LoadingButton } from "@mui/lab";
+import { OutlinedInput } from "@mui/material";
 import Box from "@mui/material/Box";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import { forwardRef, useEffect, useState } from "react";
 
-import { OutlinedInput } from "@mui/material";
 import { secretShow } from "../../utils/api/secret-show";
-import { LoadingButton } from "@mui/lab";
+
 
 interface Props {
   secretName: string;

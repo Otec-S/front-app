@@ -1,14 +1,5 @@
-import Box from "@mui/material/Box";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
-import { forwardRef, useRef, useState } from "react";
-
-import styles from "./AddSecret.module.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
@@ -18,12 +9,22 @@ import {
   Modal,
   OutlinedInput,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Box from "@mui/material/Box";
+import MuiCard from "@mui/material/Card";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { forwardRef, useRef, useState } from "react";
 
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
+import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
+
+import styles from "./AddSecret.module.css";
+
 
 interface Props {
   onCancelAdd: () => void;

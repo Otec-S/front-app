@@ -1,3 +1,4 @@
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
   Backdrop,
   Box,
@@ -17,16 +18,19 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import { FC, useEffect, useState } from "react";
+
 import AddSecret from "../../components/add-secret/AddSecret";
 // import GetSecret from "../../components/get-secret/GetSecret";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ShowSecret from "../../components/show-secret/ShowSecret";
+import { secretDelete } from "../../utils/api/secret-delete";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
-import { secretDelete } from "../../utils/api/secret-delete";
-import { Alert, AlertTitle } from "@mui/material";
+
+
 import styles from "./MainPage.module.css";
-import ShowSecret from "../../components/show-secret/ShowSecret";
+
 
 const MainPage: FC = () => {
   const [alertText, setAlertText] = useState<string | JSX.Element>("");

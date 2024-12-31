@@ -1,20 +1,6 @@
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
-import AppTheme from "../../shared-theme/AppTheme";
-import ColorModeSelect from "../../shared-theme/ColorModeSelect";
-import { useState } from "react";
 import Logo from "@assets/logo-legkeep.png";
-
-import styles from "./SignIn.module.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   AlertTitle,
@@ -23,13 +9,27 @@ import {
   Modal,
   OutlinedInput,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
-
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { userAuthorization } from "../../utils/api/user-authorization";
-
+import Box from "@mui/material/Box";
+import MuiCard from "@mui/material/Card";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import AppTheme from "../../shared-theme/AppTheme";
+import ColorModeSelect from "../../shared-theme/ColorModeSelect";
+import { userAuthorization } from "../../utils/api/user-authorization";
 import { ROUTES } from "../../utils/constants";
+
+import styles from "./SignIn.module.css";
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",

@@ -1,10 +1,12 @@
-import SignIn from "./pages/sign-in/SignIn";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { ROUTES } from "./utils/constants";
-import SignUp from "./pages/sign-up/SignUp";
-import MainPage from "./pages/main-page/MainPage";
-import ProtectedRoute from "./components/protected-rout/ProtectedRoute";
 import { CssBaseline } from "@mui/material";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+import ProtectedRoute from "./components/protected-rout/ProtectedRoute";
+import MainPage from "./pages/main-page/MainPage";
+import SignIn from "./pages/sign-in/SignIn";
+import SignUp from "./pages/sign-up/SignUp";
+import { ROUTES } from "./utils/constants";
+
 import "./utils/fonts";
 import "./App.module.css";
 // import TestCryptoPage from "./pages/test-crypto-page/testCryptoPage";
