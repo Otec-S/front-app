@@ -1,3 +1,4 @@
+import { FC, useEffect, useState } from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
   Backdrop,
@@ -19,7 +20,6 @@ import {
   TableRow,
 } from "@mui/material";
 import { Alert, AlertTitle } from "@mui/material";
-import { FC, useEffect, useState } from "react";
 
 import AddSecret from "../../components/add-secret/AddSecret";
 // import GetSecret from "../../components/get-secret/GetSecret";
@@ -27,8 +27,6 @@ import ShowSecret from "../../components/show-secret/ShowSecret";
 import { secretDelete } from "../../utils/api/secret-delete";
 import { SecretsGetFromBackend } from "../../utils/api/secrets-get-from-backend";
 import { AllSecretsFromBackend } from "../../utils/types-from-backend";
-
-
 import styles from "./MainPage.module.css";
 
 

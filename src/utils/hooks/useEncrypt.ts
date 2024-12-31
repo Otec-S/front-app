@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect,useState } from "react";
 
 export const useEncrypt = (plaintext: string, encryptionKey: string) => {
   const [ciphertext, setCiphertext] = useState<string>(""); // Пустая строка по умолчанию

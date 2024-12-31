@@ -1,11 +1,11 @@
 import { buttonBaseClasses } from "@mui/material/ButtonBase";
 import { chipClasses } from "@mui/material/Chip";
 import { iconButtonClasses } from "@mui/material/IconButton";
-import { Theme, alpha, Components } from "@mui/material/styles";
+import { alpha, Components,Theme } from "@mui/material/styles";
 import { svgIconClasses } from "@mui/material/SvgIcon";
 import { typographyClasses } from "@mui/material/Typography";
 
-import { gray, red, green } from "../themePrimitives";
+import { gray, green,red } from "../themePrimitives";
 
 export const dataDisplayCustomizations: Components<Theme> = {
   MuiList: {

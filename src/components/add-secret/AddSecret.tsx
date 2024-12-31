@@ -1,3 +1,4 @@
+import { forwardRef, useRef, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -17,12 +18,10 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { forwardRef, useRef, useState } from "react";
 
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
-
 import styles from "./AddSecret.module.css";
 
 
