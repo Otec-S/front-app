@@ -29,6 +29,7 @@ import AppTheme from "../../shared-theme/AppTheme";
 import ColorModeSelect from "../../shared-theme/ColorModeSelect";
 import { userRegistration } from "../../utils/api/user-registration";
 import { ROUTES } from "../../utils/constants";
+
 import styles from "./SignUp.module.css";
 
 const Card = styled(MuiCard)(({ theme }) => ({

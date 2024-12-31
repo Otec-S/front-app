@@ -37,8 +37,9 @@ export default tseslint.config(
         {
           groups: [
             ["^react", "^\\u0000", "^node:", "^@?\\w"],
-            ["^(@pages|@components|@assets|@shared)(/.*|$)"],
-            ["^\\.\\.(?!/?$)", "^\\.(?!/?$)", "^\\./?$", "^.+\\.(module.css)$"],
+            ["^(@pages|@components|@assets|@utils)(/.*|$)"],
+            ["^\\.\\.(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+            ["^(?=.)", "^.+\\.(module.css)$"],
           ],
         },
       ],

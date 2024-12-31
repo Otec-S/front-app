@@ -7,6 +7,7 @@ import MainPage from "./pages/main-page/MainPage";
 import SignIn from "./pages/sign-in/SignIn";
 import SignUp from "./pages/sign-up/SignUp";
 import { ROUTES } from "./utils/constants";
+
 import "./App.module.css";
 // import TestCryptoPage from "./pages/test-crypto-page/testCryptoPage";
 

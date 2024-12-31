@@ -22,6 +22,7 @@ import Typography from "@mui/material/Typography";
 import { secretSendToBackend } from "../../utils/api/secret-send-to-backend";
 import { encryptText } from "../../utils/encryptText";
 import { generateKeyFromPassword } from "../../utils/generateKeyFromPassword";
+
 import styles from "./AddSecret.module.css";
 
 
