@@ -3,6 +3,7 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+// @ts-ignore
 import importPlugin from "eslint-plugin-import"; // Импортируем плагин
 
 export default tseslint.config(
@@ -15,12 +16,18 @@ export default tseslint.config(
       globals: globals.browser,
     },
     plugins: {
+      // @ts-ignore
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       import: importPlugin, // Добавляем плагин
     },
     rules: {
-      // Включаем правило сортировки импортов
+      ...reactHooks.configs.recommended.rules, // Рекомендуемая конфигурация
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
+      // Настройка других уникальных правил после spread оператора
       "import/order": [
         "warn",
         {
@@ -28,11 +35,9 @@ export default tseslint.config(
           "newlines-between": "always",
         },
       ],
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      // Теперь здесь можете переопределять только если это необходимо
+      "react-hooks/rules-of-hooks": "error", // Если действительно есть необходимость
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
 );
