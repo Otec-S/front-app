@@ -11,7 +11,7 @@ import { ROUTES } from "./utils/constants";
 import "./App.module.css";
 // import TestCryptoPage from "./pages/test-crypto-page/testCryptoPage";
 
-// const a: string = 1;
+const a: string = 5;
 
 const router = createBrowserRouter([
   {
