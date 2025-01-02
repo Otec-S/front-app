@@ -1,4 +1,4 @@
-import { createBrowserRouter,RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./utils/fonts";
 import { CssBaseline } from "@mui/material";
 
@@ -10,6 +10,8 @@ import { ROUTES } from "./utils/constants";
 
 import "./App.module.css";
 // import TestCryptoPage from "./pages/test-crypto-page/testCryptoPage";
+
+const a: string = 1;
 
 const router = createBrowserRouter([
   {
