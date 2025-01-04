@@ -21,7 +21,6 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import styles from "./SignIn.module.css";
 
 import Logo from "@assets/logo-legkeep.png";
 
@@ -29,6 +28,8 @@ import AppTheme from "../../shared-theme/AppTheme";
 import ColorModeSelect from "../../shared-theme/ColorModeSelect";
 import { userAuthorization } from "../../utils/api/user-authorization";
 import { ROUTES } from "../../utils/constants";
+
+import styles from "./SignIn.module.css";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
