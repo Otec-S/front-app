@@ -13,32 +13,35 @@ import "./App.module.css";
 
 // const a: string = 5;
 
-const router = createBrowserRouter([
-  {
-    path: ROUTES.SIGN_IN,
-    element: <SignIn />,
-  },
-  {
-    path: ROUTES.SIGN_UP,
-    element: <SignUp />,
-  },
-  {
-    path: ROUTES.HOME,
-    element: (
-      <ProtectedRoute>
-        <MainPage />
-      </ProtectedRoute>
-    ),
-  },
-  // {
-  //   path: ROUTES.TEST,
-  //   element: (
-  //     <ProtectedRoute>
-  //       <TestCryptoPage />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: ROUTES.SIGN_IN,
+      element: <SignIn />,
+    },
+    {
+      path: ROUTES.SIGN_UP,
+      element: <SignUp />,
+    },
+    {
+      path: ROUTES.HOME,
+      element: (
+        <ProtectedRoute>
+          <MainPage />
+        </ProtectedRoute>
+      ),
+    },
+    // {
+    //   path: ROUTES.TEST,
+    //   element: (
+    //     <ProtectedRoute>
+    //       <TestCryptoPage />
+    //     </ProtectedRoute>
+    //   ),
+    // },
+  ],
+  { basename: "/front-app" },
+);
 
 function App() {
   return (
