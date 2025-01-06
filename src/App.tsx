@@ -40,7 +40,7 @@ const router = createBrowserRouter(
     //   ),
     // },
   ],
-  { basename: "/front-app" },
+  { basename: "/front-app/" },
 );
 
 function App() {
