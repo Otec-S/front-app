@@ -11,7 +11,6 @@ export default defineConfig({
     }),
     react(),
   ],
-  base: "/front-app/",
   resolve: {
     alias: {
       "@pages": path.resolve(__dirname, "src/pages"),
@@ -20,4 +19,5 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "src/utils/"),
     },
   },
+  base: "/front-app/",
 });
