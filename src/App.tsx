@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./utils/fonts";
 import { CssBaseline } from "@mui/material";
 
@@ -11,43 +11,32 @@ import { ROUTES } from "./utils/constants";
 import "./App.module.css";
 // import TestCryptoPage from "./pages/test-crypto-page/testCryptoPage";
 
-// const a: string = 5;
-
-const router = createBrowserRouter(
-  [
-    {
-      path: ROUTES.SIGN_IN,
-      element: <SignIn />,
-    },
-    {
-      path: ROUTES.SIGN_UP,
-      element: <SignUp />,
-    },
-    {
-      path: ROUTES.HOME,
-      element: (
-        <ProtectedRoute>
-          <MainPage />
-        </ProtectedRoute>
-      ),
-    },
-    // {
-    //   path: ROUTES.TEST,
-    //   element: (
-    //     <ProtectedRoute>
-    //       <TestCryptoPage />
-    //     </ProtectedRoute>
-    //   ),
-    // },
-  ],
-  { basename: "/front-app/" },
-);
-
 function App() {
   return (
     <>
       <CssBaseline />
-      <RouterProvider router={router} />
+      <Router basename="/front-app/">
+        <Routes>
+          <Route path={ROUTES.SIGN_IN} element={<SignIn />} />
+          <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
+          <Route
+            path={ROUTES.HOME}
+            element={
+              <ProtectedRoute>
+                <MainPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path={ROUTES.TEST}
+            element={
+              <ProtectedRoute>
+                <TestCryptoPage />
+              </ProtectedRoute>
+            }
+          /> */}
+        </Routes>
+      </Router>
     </>
   );
 }
